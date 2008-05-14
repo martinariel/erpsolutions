@@ -475,8 +475,6 @@
 			
 			if ($this->get_detail(state_id) == 1 || $this->get_detail(state_id) == 2) {
 			
-				//$string_sql = $this->oInterface->iface_header->sqlInsert($driver);
-				
 				array_push ($ret,  $this->oInterface->iface_header->sqlInsert($driver) );
 				
 				$config = new cls_lines_config($this->db,1);
@@ -491,18 +489,12 @@
 					while ( !$rs->EOF ) {
 						$this->oInterface->iface_lines->set_details( $rs->fields );
 						array_push ( $ret, $this->oInterface->iface_lines->sqlInsert($driver) );
-						//$string_sql .= "\n". $this->oInterface->iface_lines->sqlInsert($driver);
 						$rs->MoveNext();
 					}
 				}
+				
+				
 			}
-			
-			
-			
-			
-			/*$file_header = fopen("upload/tran_$header_id.sql","w");
-			fputs($file_header,$string_sql);
-			fclose($file_header);*/
 			
 			return $ret;
 			

@@ -1,7 +1,8 @@
 <?php
 
 	class cls_transaction_state extends cls_sql_table {
-		function __construct ( cls_sql &$db , $id = 0 ) {
+		
+		function __construct (cls_sql &$db ,$id = 0) {
 			parent::__construct($db,'transaction_states', $id,'state_id');			
 		}
 		
@@ -12,9 +13,14 @@
 				$proximos = explode ( ',' , $this->get_detail (next_avail) ) ;
 				
 				if ( count($proximos) > 0) {
+				
 					echo "<select id=cmb_est_$id name=cmb_est_$id>";
 					foreach ($proximos as $opcion) {
-						echo "<option value=$opcion >". $this->nombreEstado($opcion) . '</option>';
+						$estado = new cls_transaction_state($this->db, $opcion);
+						
+						if (cls_sql::numeroSQL($estado->get_detail(min_user_level_id)) <= cls_sql::numeroSQL($_SESSION['user_level'])){
+							echo "<option value=$opcion >". $estado->get_detail(description) . '</option>';
+						}
 					}
 					echo '</select>';
 					$ret = true;
@@ -23,15 +29,5 @@
 			return $ret;
 		}
 		
-		private function nombreEstado ($id) {
-			$id = cls_sql::numeroSQL($id);
-			$sql = $this->get_select_query() . " where $this->id_field = $id ";
-			$rs = $this->db->ejecutar_sql($sql);
-			
-			if ($rs && !$rs->EOF){
-				return $rs->fields['description'];
-			}
-		}
-	
 	}
 ?>

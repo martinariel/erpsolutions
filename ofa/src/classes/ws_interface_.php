@@ -13,7 +13,7 @@
 		
 		if ( $user->_checkLogin($user_id,$password) ) {
 			
-			$tran = new cls_transaction($db, $tran_id);
+			$tran = new cls_transaction($db, getTransactionIdFromNumeroPedido($tran_id));
 			$tran->set_detail (state_id, $state_id);
 			$tran->set_detail (last_modified, cls_utils::fechaHoraActual() );
 			$tran->set_detail (modified_by, $user->get_id() );
@@ -32,12 +32,23 @@
 		return $resultado;
 	}
 		
+	function getTransactionIdFromNumeroPedido($numero_pedido){
+		
+		$db   = new cls_sql();
+		$sql  = "select transaction_id from transactions where numero_pedido=";
+		$sql .= cls_sql::numeroSQL($numero_pedido);
+			
+		$rs = $db->ejecutar_sql($sql);
+
+		return (!$rs->EOF)?$rs->fields[0]:0;
+	
+	}
 		
 	function getTransactionId($state_id) {
 		$db   = new cls_sql();
 		$tran = new cls_transaction($db);
 		
-		$sql = "select $tran->id_field from $tran->table_name where state_id = " . cls_sql::numeroSQL($state_id);
+		$sql = "select numero_pedido from $tran->table_name where state_id = " . cls_sql::numeroSQL($state_id);
 		
 		$rs = $tran->db->ejecutar_sql($sql);
 		
@@ -51,34 +62,25 @@
 	}
 	
 	function downloadTransactionHeader ( $tran_id) {
-		
 		$db   = new cls_sql();
 		$tran = new cls_transaction ( $db, $tran_id);
-		
 		return $tran->getTransactionHeader();
-		
 	}
 	
 	function downloadTransactionLines ( $tran_id) {
-		
 		$db   = new cls_sql();
 		$tran = new cls_transaction ( $db, $tran_id);
-		
-		return $tran->getTransactionLines();
-		
+		return $tran->getTransactionLines();	
 	}
 	
 	function downloadTransactionSql ($tran_id, $user_id, $password) {
 	
-		$db = new cls_sql();
+		$db   = new cls_sql();
 		$user = new cls_user($db);
 		
 		if ( $user->_checkLogin($user_id,$password) ) {
-			
-			$db   = new cls_sql();
-			$tran = new cls_transaction ( $db, $tran_id);
-			
-			return $tran->getTransactionSql();
+			$tran = new cls_transaction ($db, getTransactionIdFromNumeroPedido($tran_id));
+			return $tran->getTransactionSql();	
 		}
 		else
 		{
