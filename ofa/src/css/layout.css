@@ -1,0 +1,66 @@
+/* erpsolutions.com Css Layout 
+Author: Martin Fernandez
+Copyright 2007
+*/
+
+@media print {
+	input {display:none}
+	#header{display:none}
+	#menuh{display:none}
+	#Footer{display:none}
+	#content th { font-size:11px;color:#000000;background-color:#FFFFFF;}
+}
+
+
+/***************************************Layers********************************************/
+#Container{width: 752px;margin: 0 auto;background-color: #ffffff;border: 1px solid black;line-height: 130%;}
+#linea {border: solid;border-width: 1px 0px 0px; border-color: #cccccc black black}
+#Content {text-align: left;margin-top:20px;padding: 1em;width:95%;}
+#Header {height:110px;text-align:left;margin:0px auto;margin-bottom:10px;padding:0px;}
+#Footer {clear: left;width: 100%;text-align:center;background-color:#000000;font-size: 9px;
+		border-color: #CCCCCC ; border-style: solid; border-width: 1px 0px 0px;	
+}
+#menuh {font: 11px Verdana;padding-left:10px;padding-right:10px;padding-top:5px;height:20px;
+		text-align:right;background-color:black;color:white;
+	border-color: #CCCCCC ; border-style: solid; border-width: 1px 0px 1px;
+}
+#textMain { border-right: 1px solid #CCCCCC;border-top: 1px solid #CCCCCC;padding-right: 10px;}
+#textHeaderRight{ text-align:right; font-family:verdana; margin-right:20px; font-size:10px;font-weight:bold;}
+
+#Content a { text-decoration: none; color: #000000; }
+#Content a:hover {text-decoration: underline;color: #FF0000;}
+#Header img{margin:10px 0px 0px 15px;}
+#menuh td { font-size:11px;color:white}
+#content td { font-size:11px;background-color:#FFFFFF}
+#content th { font-size:11px;color:#FFFFFF;background-color:#000000;}
+#Footer p {font-family: Verdana;font-size: 9px;color: #ffffff;text-decoration: none;margin:0;padding:0px 10px;}
+
+/***************************************Classes********************************************/
+.mainText { font-family: Verdana; font-size: 11px; color: #000000;}
+.black {font-weight: bold}
+.blackSmall {font-weight: bold;font-size: 9px;}
+.tableAbm{ width:600px; background-color:black; }
+.combo { color: #000000; background: #ffffff; border: 1px solid #000000; font-family: Verdana;  font-size: 11px; }
+.button{font-weight:bold;color:red;background-color:#333333;}
+.underline{text-decoration:underline;}
+.submit input{color: #000000;background: #ffa20f;border: 2px outset #d7b9c9;} 
+.tableAbm td{text-align:center;}
+
+/***************************************Redif********************************************/
+body {
+	margin:20px 0px;padding:0px;text-align:left;background-color: #E9E9E9;
+	scrollbar-base-color: black;scrollbar-arrow-color: red;
+	scrollbar-DarkShadow-Color: black;scrollbar-Face-Color: black
+}
+a{ text-decoration:none;color:white;}
+a:hover{color:red;}
+
+hr {color: #CCCCCC;background-color: #CCCCCC;height: 1px;}
+fieldset{border: 1px solid #000000;width: 35em}
+legend{color: #000000;background: #ffffff;border: 1px solid #000000;padding: 2px 6px} 
+label { width: 8em; float: left; text-align: right; margin-right: 0.5em; display: block;}
+input{color: #000000;background: #ffffff;border: 1px solid #000000;font-family: Verdana;font-size: 10px;}
+textarea{color: #000000;background: #ffffff;border: 1px solid #000000;font-family: Verdana; font-size: 10px; }
+img{ border : 0px; }
+img.floatLeft {float:left;margin-left:4px;margin-right:10px;margin-bottom:4px;}
+img.floatRight {float:right;margin-left: 4px;margin-right:4px;margin-bottom: 4px;}
