@@ -295,7 +295,8 @@
 					$customer->set_table_name('ra_customers');
 				}
 					
-
+				$observaciones = substr($observaciones, 0, 100);
+				
 				$strFechaHora = cls_utils::fechaHoraActual();
 			
 				//seteo los detalles de la transaccion
@@ -384,6 +385,15 @@
 			if ($this->execute_update()) {
 				$this->tituloTransaccion();
 				echo 'Ha sido confirmada con éxito';
+			}
+		}
+		
+		public function retenerTransaction() {
+			$this->set_detail(state_id, 7);
+			$this->set_detail(modified_by,$_SESSION['uid']);
+			if ($this->execute_update()) {
+				$this->tituloTransaccion();
+				echo 'Ha sido retenida con éxito';
 			}
 		}
 		

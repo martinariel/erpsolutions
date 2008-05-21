@@ -12,6 +12,7 @@
 		case 1: $tran->transferTransaction(); break;
 		case 2: $tran->confirmTransaction();break;
 		case 3: $tran->cancelTransaction(); break;
+		case 7: $tran->retenerTransaction();break;
 	}
 	
 	echo '<br><a href=transactions.php>[Volver]</a>';
