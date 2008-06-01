@@ -8,9 +8,9 @@
 		
 		}
 		
-		public function combo () {
+		public function combo ($seleccionado = -1,$mostrarSeleccione = true) {
 			$sql = "select distinct $this->id_field, pay_term_description from $this->table_name";
-			comboBox ($this->db,$sql,'','pay_term_id','','',false );
+			comboBox ($this->db,$sql,'','pay_term_id',$seleccionado,'',false ,0, $mostrarSeleccione);
 		}
 		
 		public function titulo () {

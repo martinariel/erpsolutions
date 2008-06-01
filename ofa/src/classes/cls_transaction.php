@@ -201,7 +201,7 @@
 		} 
 		
 		public function tabla() {
-			addJs ('js/transaction.js');
+			addJs ('js/transaction.1.2.js');
 			
 			$sql = $this->get_select_query();
 			$sql .= " where $this->id_field >0";
@@ -223,7 +223,7 @@
 			if ($rs && !$rs->EOF){
 				
 				echo '<table bgColor=#000000 cellspacing=1 cellpadding=4>';
-				echo '<tr><th>Código</th><th>N°Pedido</th><th>Creado</th><th>Fecha Creaci&oacute;n</th><th>Modificado</th><th>Fecha Modificaci&oacute;n</th><th>Impresiones</th><th>Estado</th><th>Cambiar</th></tr>';
+				echo '<tr><th>Código</th><th>N°Pedido</th><th>Creado</th><th>Fecha Creaci&oacute;n</th><th>Modificado</th><th>Fecha Modificaci&oacute;n</th><th>Impresiones</th><th>Estado</th><th>Cambiar<br>Estado</th><th></th></tr>';
 				
 				while (!$rs->EOF){
 					
@@ -257,6 +257,17 @@
 					}
 					
 					echo '</td>';
+					
+					if (cls_sql::numeroSQL($rs->fields['state_id']) != 4 && cls_sql::numeroSQL($rs->fields['state_id']) != 3 && cls_sql::numeroSQL($rs->fields['state_id']) != 5){
+						echo '<td><a href=javascript:openDetailsUpdate('. $rs->fields[$this->id_field] . ')><img src=img/edit.gif></a></td>';
+					}
+					else
+					{
+						echo '<td></td>';
+					}
+
+					
+				
 					
 					echo '</tr>';
 					

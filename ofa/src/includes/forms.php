@@ -46,14 +46,14 @@
 		echo "</td></tr>";
 	}
 	
-	function comboBox (&$db,$strsql,$caption,$name,$selected=0,$onChange='' , $table=true, $selectedIdx=0){
+	function comboBox (&$db,$strsql,$caption,$name,$selected=0,$onChange='' , $table=true, $selectedIdx=0,$mostrarSeleccione = true){
 		$rs = $db->ejecutar_sql($strsql);
 		
 		if ($rs && !$rs->EOF){
 			if ($table) echo "<tr><td align=right>$caption</td><td>";
 			
 			echo "<select class=combo id=\"$name\" name=\"$name\" onChange=\"$onChange\">".$retorno;
-			echo '<option  value=0>-seleccione-</option>';
+			if ($mostrarSeleccione) echo '<option  value=0>-seleccione-</option>';
 			$i=0;
 			while ( !$rs->EOF){
 			

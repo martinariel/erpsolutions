@@ -13,3 +13,8 @@ function openDetails(id) {
 	
 	win = window.open ("detail_transaction.php?id="+id,'win','width=780,height=500,scrollbars=yes');
 }
+
+function openDetailsUpdate(id) {
+	if (win) win.close();
+	win = window.open ("detail_transaction_update.php?id="+id,'win','width=780,height=500,scrollbars=yes');
+}

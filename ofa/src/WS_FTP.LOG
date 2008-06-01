@@ -87,3 +87,6 @@
 2007.11.05 23:29 B C:\xampplite\htdocs\interface\ofa\src\print.php <-- ofar /ofarv2 print.php
 2007.11.05 23:29 B C:\xampplite\htdocs\interface\ofa\src\search_customer.php <-- ofar /ofarv2 search_customer.php
 2007.11.22 20:51 B C:\xampplite\htdocs\interface\ofa\src\new_customer.php --> ofar.com.ar /ofarv2 new_customer.php
+2008.05.20 22:07 B C:\xampplite\htdocs\interface\ofa\src\action_transaction.php --> ofar.com.ar /ofarv2 action_transaction.php
+2008.06.01 12:59 B C:\xampplite\htdocs\interface\ofa\src\change_transaction.php --> ofar.com.ar /ofarv2 change_transaction.php
+2008.06.01 12:59 B C:\xampplite\htdocs\interface\ofa\src\detail_transaction_update.php --> ofar.com.ar /ofarv2 detail_transaction_update.php

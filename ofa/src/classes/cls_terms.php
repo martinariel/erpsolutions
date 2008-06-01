@@ -7,9 +7,13 @@
 			parent::__construct ( $db, 'ra_terms_tl',$id, 'term_id' );
 		}
 		
-		public function comboTerms () {
+		public function comboTerms ($seleccionado = -1, $mostrarSeleccione = true) {
 			$sql = "select distinct $this->id_field, description from $this->table_name";
-			comboBox ($this->db,$sql,'','term_id','','',false );
+			comboBox ($this->db,$sql,'','term_id',$seleccionado,'',false,0, $mostrarSeleccione );
+		}
+		
+		public function combo($seleccionado = -1, $mostrarSeleccione = true){
+			$this->comboTerms($seleccionado, $mostrarSeleccione);
 		}
 		
 		//html titulo de la lista de precios

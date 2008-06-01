@@ -25,5 +25,43 @@
 				return $this->get_detail($this->get_id_field());
 		}
 		
+		
+		public function cambiarPayTerms(cls_pay_terms $nuevoPayTerm){
+			$this->set_detail('attribute1', $nuevoPayTerm->get_id());
+			$this->set_detail('custom_pay_term', $nuevoPayTerm->get_id());
+			$this->execute_update();
+		}
+		
+		public function cambiarTerms(cls_terms $nuevoTerms){
+		
+			$dummie = new cls_interface_lines($this->db);
+			
+			
+			$strsql = 'select ' . $dummie->get_id_field() . ' from '. $dummie->get_table_name() .
+					' where '. $this->get_id_field() . '=' . $this->get_id();
+					
+					
+			$rs = $this->db->ejecutar_sql($strsql);
+			
+			if ($rs){
+			
+				while (!$rs->EOF){
+					$dummie = new cls_interface_lines($this->db, $rs->fields[0]);
+					$dummie->set_detail('payment_term_id',$nuevoTerms->get_id());
+					$dummie->set_detail('payment_term', $nuevoTerms->get_detail('name'));
+					$dummie->execute_update();
+					$rs->moveNext();
+				}
+				
+				$this->set_detail('payment_term_id', $nuevoTerms->get_id());
+				$this->set_detail('payment_term', $nuevoTerms->get_detail('name'));
+				$this->execute_update();
+			}
+			else {
+				echo $strsql;
+			}
+		}
+		
+		
 	}
 ?>
