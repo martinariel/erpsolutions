@@ -12,17 +12,17 @@
 	
 	class cls_search {
 		
-		private $tabla;
-		private $camposView;
-		private $camposSearch;
-		private $camposSearchCaption;
-		private $camposAlias;
-		private $where;
-		private $campoClick;
-		private $accionClick;
-		private $noview;
+		protected $tabla;
+		protected $camposView;
+		protected $camposSearch;
+		protected $camposSearchCaption;
+		protected $camposAlias;
+		protected $where;
+		protected $campoClick;
+		protected $accionClick;
+		protected $noview;
 		
-		private $arrCamposClick;
+		protected $arrCamposClick;
 		
 		const search_query='search';
 		const search_field='field';
@@ -186,7 +186,7 @@
 		Traduce a sentencia sql segun el parametro de campo de busqueda, la busqueda, las condiciones iniciales
 		y los alias de los campos.
 		*/
-		private function sqlTranslator ( $busqueda, $idFld ) {
+		protected function sqlTranslator ( $busqueda, $idFld ) {
 			$tabla = $this->tabla->table_name;
 			$campos = '';
 			$where  = '';
