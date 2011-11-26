@@ -66,13 +66,13 @@
 		
 		
 		echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
+		
 		//Numero de pedido
 		echo '<tr>
 					<td><b>Número de Pedido</b></td>
 					<td><input type=text name=txt_numero_pedido maxlength=7 id=txt_numero_pedido></td>
 			  </tr>
 		';
-		
 		
 		if ($customer->get_detail (price_list_id) != 0 ) {
 			echo '<tr><td><b>Lista de precios</b></td><td>';

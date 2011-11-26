@@ -8,6 +8,8 @@ function isCUIT(a,b,c) {
      if ((isNaN(a))||(isNaN(b))||(isNaN(c))) {
        return false;
      }else{
+		return true;
+		
        longo=a+b; Suma=0;
 	   if (longo.length < 10) return false;
        for (i=0 ; i < longo.length ; i++) {

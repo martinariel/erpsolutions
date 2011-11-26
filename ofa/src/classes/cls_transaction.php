@@ -312,14 +312,14 @@
 			
 				//seteo los detalles de la transaccion
 			
-				$this->set_detail(obs,$observaciones);
-				$this->set_detail(type_id,($estadoInicial==-1)?1:2);
-				$this->set_detail(user_id,$user->get_id() );
-				$this->set_detail(modified_by, $user->get_id() );
-				$this->set_detail(created,$strFechaHora);
-				$this->set_detail(last_modified,$strFechaHora);
-				$this->set_detail(state_id,$estadoInicial);
-				$this->set_detail(numero_pedido,$this->getNumeroPedido());
+				$this->set_detail ( obs           , $observaciones);
+				$this->set_detail ( type_id       , ($estadoInicial==-1)?1:2);
+				$this->set_detail ( user_id       , $user->get_id() );
+				$this->set_detail ( modified_by   , $user->get_id() );
+				$this->set_detail ( created       , $strFechaHora);
+				$this->set_detail ( last_modified , $strFechaHora);
+				$this->set_detail ( state_id      , $estadoInicial);
+				$this->set_detail ( numero_pedido , $this->getNumeroPedido());
 
 					
 					

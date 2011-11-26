@@ -1346,7 +1346,7 @@ Element.Methods = {
     return element;
   },
 
-  update: function(element, html) {
+  update: function(element, html) {
     html = typeof html == 'undefined' ? '' : html.toString();
     $(element).innerHTML = html.stripScripts();
     setTimeout(function() {html.evalScripts()}, 10);

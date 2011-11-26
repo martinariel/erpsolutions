@@ -16,7 +16,7 @@ Copyright 2007
 #Container{width: 752px;margin: 0 auto;background-color: #ffffff;border: 1px solid black;line-height: 130%;}
 #linea {border: solid;border-width: 1px 0px 0px; border-color: #cccccc black black}
 #Content {text-align: left;margin-top:20px;padding: 1em;width:95%;}
-#Header {height:110px;text-align:left;margin:0px auto;margin-bottom:10px;padding:0px;}
+#Header {height:100px;text-align:left;margin:0px auto;margin-bottom:10px;padding:0px;padding-top:10px}
 #Footer {clear: left;width: 100%;text-align:center;background-color:#000000;font-size: 9px;
 		border-color: #CCCCCC ; border-style: solid; border-width: 1px 0px 0px;	
 }

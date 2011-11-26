@@ -8,6 +8,7 @@
 	$list_id		= $_POST ['list_id'];
 	$term_id 		= $_POST ['term_id'];
 	$pay_term_id    = $_POST ['pay_term_id'];
+	$numero_pedido  = $_POST ['txt_numero_pedido'];
 	
 	$customer = new cls_custom_customer($db,$customer_id, $condiciones);	
 	$list 	  = new cls_list_price ($db,$list_id);
