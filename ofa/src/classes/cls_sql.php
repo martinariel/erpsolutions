@@ -32,11 +32,11 @@
 
 		const SERVER = "localhost";
 
-		const DB	 = "EBS_WEB_INTERFACE";
+		const DB	 = "EBS";
 
 		const USER	 = "root";
 
-		const PWD  	 = "1234";
+		const PWD  	 = "";
 
 		
 

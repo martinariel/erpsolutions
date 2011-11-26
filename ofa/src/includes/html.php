@@ -10,11 +10,13 @@
 	*/
 	
 	
-	function addDiv ($id,$style='',$innerHtml=''){
+	function addDiv ($id,$style='',$innerHtml='')
+	{
 		echo "<div id=\"$id\" $style>$innerHtml</div>";
 	}
 	
-	function addJs ($js) {
+	function addJs ($js) 
+	{
 		echo "<script language=\"javascript\" src=$js>";
 		?>
 		</script>

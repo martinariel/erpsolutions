@@ -1,6 +1,7 @@
 <?php
 
-	abstract class cls_iface_config {
+	abstract class cls_iface_config 
+	{
 	
 		private $table;
 		private $obj;
@@ -10,57 +11,74 @@
 		const dest_fld = 'dest_fld';
 		const bool_fld = 'tran_b';
 		
-		private $arrSource = array();
+		private $arrSource    = array();
 		private $arrFunctions = array();
 		private $ajaxUrl;
 		private $db;
 		
 		private $contadorInserts;
-		
-		public function setContador($cont){
-			$this->contadorInserts = $cont;
-		}
-		
-		public function getContador()
-		{
-			return $this->contadorInserts;
-		}
-		
 		private $arrInterfaz; //matriz de la tabla de interfaz
 		private $fechaActual;
 		
-		function __construct ( cls_sql &$db ,cls_sql_table &$obj, $table_name, $url, $param=0) {
+		function __construct ( cls_sql &$db ,cls_sql_table &$obj, $table_name, $url, $param=0) 
+		{
 			$this->db 		= $db;
 			$this->table 	= $table_name;
 			$this->obj		= $obj;
 			$this->ajaxUrl 	= $url;
 			
-			if ($param==0) {
-				$this->agregarObjeto ( new cls_customer($db) );
-				$this->agregarObjeto ( new cls_salesrep($db) );
-				$this->agregarObjeto ( new cls_list_price($db) );
-				$this->agregarObjeto ( new cls_terms($db) );
-				$this->agregarObjeto ( new cls_pay_terms($db) );
-				$this->agregarObjeto ( new cls_transaction($db));
+			if ( $param == 0) 
+			{
+				$this->agregarObjeto ( new cls_customer    ( $db ));
+				$this->agregarObjeto ( new cls_salesrep    ( $db ));
+				$this->agregarObjeto ( new cls_list_price  ( $db ));
+				$this->agregarObjeto ( new cls_terms       ( $db ));
+				$this->agregarObjeto ( new cls_pay_terms   ( $db ));
+				$this->agregarObjeto ( new cls_order_type  ( $db ));
+				$this->agregarObjeto ( new cls_transaction ( $db ));
 				
 				$this->cargarFunciones ();
 			}
 			
 			$this->setContador(0);
 		}
+
+		//----------------------------------------------------------------------
+
+		public function setContador($cont)
+		{
+			$this->contadorInserts = $cont;
+		}
+
+		//----------------------------------------------------------------------
 		
-		public function agregarObjeto ( cls_sql_table $obj ){
+		public function getContador()
+		{
+			return $this->contadorInserts;
+		}
+		
+		//----------------------------------------------------------------------
+
+		public function agregarObjeto ( cls_sql_table $obj )
+		{
 			array_push ( $this->arrSource, $obj );
 		}
 		
-		public function get_interfaz() {
-			if ( !isset ( $this->arrInterfaz) ) {
+		//----------------------------------------------------------------------
+
+		public function get_interfaz() 
+		{
+			if ( !isset ( $this->arrInterfaz) ) 
+			{
 				$this->interfaz();
 			}
 			return $this->arrInterfaz;
 		}
 
-		private function interfaz () {
+		//----------------------------------------------------------------------
+
+		private function interfaz () 
+		{
 			$table 	  = $this->table;
 			$src_tb   = self::src_tb;
 			$src_fld  = self::src_fld;
@@ -75,7 +93,10 @@
 			}
 		}
 		
-		public function ejecutarFuncion ($indiceInterfaz) {
+		//----------------------------------------------------------------------
+
+		public function ejecutarFuncion ($indiceInterfaz) 
+		{
 			$interfaz = $this->get_interfaz();
 			$fila	  = $interfaz[$indiceInterfaz];
 			$table 	  = $this->obj->table_name;
@@ -83,18 +104,22 @@
 			$src_fld  = self::src_fld;
 			$dest_fld = self::dest_fld;
 
-			switch ($fila[$src_tb] ) {
-				case 'fijo' : return $fila[$src_fld];break;
+			switch ($fila[$src_tb] )
+			 {
+				case 'fijo'      : return $fila[$src_fld];break;
 				case 'incremento': 
 						$campo = $fila[$src_fld];
-						$sql = "select max($campo) from $table";
-						$rs = $this->db->ejecutar_sql($sql);
-						if ($rs && !$rs->EOF){
+						$sql   = "select max($campo) from $table";
+						$rs    = $this->db->ejecutar_sql($sql);
+
+						if ($rs && !$rs->EOF)
+						{
 							return ($rs->fields[0] + 1);
 						}
 						break;
 				case 'fecha' :
-						if (!isset ($this->fechaActual) ) {
+						if (!isset ($this->fechaActual) ) 
+						{
 							$this->fechaActual = cls_utils::fechaHoraActual();
 						}
 						
@@ -107,21 +132,26 @@
 			}
 			
 		}
+
+		//----------------------------------------------------------------------
 		
-		private function cargarFunciones() {
-			$autoIncrement = array('Incremento','incremento','combo',$this->table);
-			$fijo		   = array('Valor Fijo', 'fijo','text');
-			$fecha		   = array('Fecha Actual', 'fecha','');
-			$contador	   = array('Contador', 'contador','');
+		private function cargarFunciones() 
+		{
+			$autoIncrement = array( 'Incremento'   , 'incremento' , 'combo',$this->table);
+			$fijo		   = array( 'Valor Fijo'   , 'fijo'       , 'text' );
+			$fecha		   = array( 'Fecha Actual' , 'fecha'      , ''     );
+			$contador	   = array( 'Contador'     , 'contador'   , ''     );
 			
-			array_push ( $this->arrFunctions, $autoIncrement);
-			array_push ( $this->arrFunctions, $fijo );
-			array_push ( $this->arrFunctions, $fecha );
-			array_push ( $this->arrFunctions, $contador);
+			array_push ( $this->arrFunctions , $autoIncrement );
+			array_push ( $this->arrFunctions , $fijo          );
+			array_push ( $this->arrFunctions , $fecha         );
+			array_push ( $this->arrFunctions , $contador      );
 		}
 		
-		
-		private function guardar() {
+		//----------------------------------------------------------------------
+
+		private function guardar() 
+		{
 			$campos = $this->obj->get_vector_campos();
 			
 			$table 	  = $this->table;
@@ -148,6 +178,8 @@
 			}
 			echo '<b>La configuración ha sido guardada.</b>';
 		}
+
+		//----------------------------------------------------------------------
 		
 		public function configurar () {
 			$url = $this->ajaxUrl;

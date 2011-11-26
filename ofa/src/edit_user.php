@@ -88,12 +88,10 @@
 	<script language="javascript">
 		function guardarDatos() {
 			var msg= "";
-			if ($('txtusername').value == '') msg += "- Debe completar el nombre de usuario ";
-			if ($('txtpass').value == '') msg += "\n- Debe completar la contraseña ";
-			if ($('txtemail').value == '') msg += "\n- Debe completar el email ";
-			if ($('nivel').value == '0') msg += "\n- Debe Seleccionar el nivel de usuario ";
-			
-			
+			if ($('txtusername').value == '' ) msg += "- Debe completar el nombre de usuario ";
+			if ($('txtpass'    ).value == '' ) msg += "\n- Debe completar la contraseña ";
+			if ($('txtemail'   ).value == '' ) msg += "\n- Debe completar el email ";
+			if ($('nivel'      ).value == '0') msg += "\n- Debe Seleccionar el nivel de usuario ";
 			
 			if(msg=='') {
 				$('frmuser').submit();

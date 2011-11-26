@@ -7,25 +7,32 @@
 	@author Martin Fernandez
 	*/
 	
-	class cls_product extends cls_sql_table {
-		
+	class cls_product extends cls_sql_table 
+	{
 		private $precioUnidad = 0;
 		private $cantidad     = 0;
 		private $modo		  = 0;
 		
 		const iva = 0.21;
 		
-		function __construct (cls_sql &$db, $id = 0 ) {
+		function __construct (cls_sql &$db, $id = 0 ) 
+		{
 			parent::__construct($db,'mtl_system_items_b', $id,'inventory_item_id');
 		}
+
+		//----------------------------------------------------------------------
 		
 		//Devuelve el precio con iva si es que el producto no esta exento
-		public function precio_con_iva ($precio) {
-			if ($this->get_modo() == 0) {
-				if (strtolower($this->get_detail(global_attribute2)) == 't-bienes') {
+		public function precio_con_iva ($precio) 
+		{
+			if ($this->get_modo() == 0) 
+			{
+				if (strtolower($this->get_detail(global_attribute2)) == 't-bienes') 
+				{
 					return round($precio  + ($precio*self::iva) , 2);
 				}
-				else {
+				else 
+				{
 					return $precio;
 				}
 			}
@@ -34,46 +41,63 @@
 				return 0;
 			}
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function set_modo ($modo) {
+		public function set_modo ($modo) 
+		{
 			$this->modo = $modo;
 			$this->set_detail(custom_modo, $this->modo);
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function get_modo (){
+		public function get_modo ()
+		{
 			return $this->modo;
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function set_precioUnidad($precio){
+		public function set_precioUnidad ( $precio )
+		{
 			$this->precioUnidad = $precio;
-			if ($this->get_modo() == 0) {
-				$this->set_detail(custom_price,$precio);
-			}
-			else
-			{
-				$this->set_detail(custom_price,0);
-			}
+			$this->set_detail ( custom_price , ( $this->get_modo() == 0 ) ? $precio : 0 );
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function get_precioUnidad(){
-			if ($this->get_modo() == 0) {
+		public function get_precioUnidad()
+		{
+			if ($this->get_modo() == 0) 
+			{
 				return $this->precioUnidad;
 			}
-			else {
+			else 
+			{
 				return 0;
 			}
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function set_cantidad ($cantidad) {
+		public function set_cantidad ( $cantidad ) 
+		{
 			$this->cantidad = $cantidad;
-			$this->set_detail ( custom_quantity, $this->cantidad);
+			$this->set_detail ( custom_quantity , $this->cantidad);
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function get_cantidad (){
+		public function get_cantidad ()
+		{
 			return $this->cantidad;
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function get_precioTotalIva (){
+		public function get_precioTotalIva ()
+		{
 			if ($this->get_modo() == 0){
 				return $this->cantidad * $this->precio_con_iva ( $this->precioUnidad );
 			}
@@ -82,8 +106,11 @@
 				return 0;
 			}
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function get_precioTotalSinIva (){
+		public function get_precioTotalSinIva ()
+		{
 			if ($this->get_modo() == 0){
 				return $this->cantidad * $this->precioUnidad;
 			}
@@ -92,6 +119,8 @@
 				return 0;
 			}
 		}
+
+		//----------------------------------------------------------------------
 		
 	}
 ?>

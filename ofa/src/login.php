@@ -16,9 +16,9 @@
 	
 	echo '<div style=height:300px>';
 	iniciarForm('frmLogin','login.php','post','',true);
-	
-	comboBox ($db,'select user_id,username from users','Usuario','cmbUser','0','');
-	textBoxPassword('Password','txtPwd','return keyPressLogin(event)');
+
+	textBox         ('User'     , 'txtUser' , '' );
+	textBoxPassword ('Password' , 'txtPwd'  ,'return keyPressLogin(event)');
 	
 	buttonTable ('Entrar','doLogin()');
 	

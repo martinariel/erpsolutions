@@ -8,44 +8,58 @@
 	
 	*/
 
-	Class cls_customer extends cls_sql_table {
+	class cls_customer extends cls_sql_table 
+	{
 		
-		function __construct(	cls_sql &$db,
-								$id = 0 , 
-								$condiciones = array() ,
-								$tabla = 'optional',
-								$campo_id = 'optional'
-								){			
+		function __construct (	cls_sql &$db,
+								$id          = 0          , 
+								$condiciones = array()    ,
+								$tabla       = 'optional' ,
+								$campo_id    = 'optional' )
+		{			
 								
 			if ($campo_id == 'optional') $campo_id 	= 'customer_id';
 			if ($tabla 	  == 'optional') $tabla 	= 'ra_customers';
 			
 			parent::__construct($db,$tabla, $id,$campo_id, $condiciones);
 		}
+
+		//----------------------------------------------------------------------
 		
-		
-		public function html_detail(){
+		public function html_detail( $mostrar_saldo = false )
+		{
 			?>
-			<table align="center" width=700>
+			<table align="center" width="700">
 				<tr>
-					<td colspan=2><b>N° de Cliente:</b> <?php echo $this->get_detail(customer_number)?></td>
+					<td colspan="2"><b>N° de Cliente:</b> <?php echo $this->get_detail ( customer_number )?></td>
 				</tr>
 				<tr>
-					<td><b>Raz&oacute;n social:</b> <?php echo $this->get_detail(customer_name)?></td>
-					<td><b>Nombre Fantasia:</b> <?php echo $this->get_detail(customer_name_phonetic)?></td>
+					<td><b>Raz&oacute;n social:</b> <?php echo $this->get_detail ( customer_name          )?></td>
+					<td><b>Nombre Fantasia:</b>     <?php echo $this->get_detail ( customer_name_phonetic )?></td>
+				</tr>
+
+				<?php
+				if ( $mostrar_saldo )
+				{
+				?>
+				<tr>
+					<td><b>Saldo:</b> <?php echo $this->get_detail ( saldo )?></td>
+					<td></td>
+				</tr>
+				<?php
+				}
+				?>
+				<tr>
+					<td><b>CUIT:</b> <?php echo $this->get_detail ( cuit        )?></td>
+					<td><b>CP:</b>   <?php echo $this->get_detail ( postal_code )?></td>
 				</tr>
 				<tr>
-					<td><b>CUIT:</b> <?php echo $this->get_detail(cuit)?></td>
-					<td><b>CP:</b> <?php echo $this->get_detail(postal_code)?></td>
-				</tr>
-				<tr>
-					<td><b>Provincia:</b> <?php echo $this->get_detail(province)?></td>
+					<td><b>Provincia:</b>        <?php echo $this->get_detail(province)?></td>
 					<td><b>Direcci&oacute;n:</b> <?php echo $this->get_detail(address1)?></td>
 				</tr>
 				<tr>
-				
-					<td><b>Localidad:</b> <?php echo $this->get_detail(city)?></td>
-					<td><b>Tel&eacute;fono:</b> <?php echo $this->get_detail(phone)?></td>
+					<td><b>Localidad:</b>       <?php echo $this->get_detail ( city  )?></td>
+					<td><b>Tel&eacute;fono:</b> <?php echo $this->get_detail ( phone )?></td>
 				</tr>
 				
 			</table>
