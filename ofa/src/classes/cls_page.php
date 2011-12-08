@@ -44,13 +44,12 @@
 			
 			$rs = $this->db->ejecutar_sql($sql);
 			
-			if ($rs) {
+
+			if ($rs) 
+			{
 				while(!$rs->EOF){
-					echo '<a href='.$rs->fields['page_url'] .'>'.$rs->fields['page_name'].'</a>';
+					echo '<li><a href='.$rs->fields['page_url'] .'>'.$rs->fields['page_name'].'</a></li>';
 					$rs->MoveNext();
-					if (!$rs->EOF){
-						echo " | ";
-					}
 				}
 			}	
 		}

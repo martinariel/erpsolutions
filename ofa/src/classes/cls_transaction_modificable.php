@@ -57,9 +57,10 @@
 						case 'inventory_item_id' : $product_id = intval ( $key['value'] ); break;
 						case 'custom_modo'       : $modo       = intval ( $key['value'] ); break;
 						case 'ordered_quantity'  : $cantidad   = intval ( $key['value'] ); break;
+						case 'unit_selling_price': $precio     = $key['value'] ; break;
 					}
 				}
-				$products->agregarExterno($product_id,$modo,$cantidad);
+				$products->agregarExterno($product_id,$modo,$precio,$cantidad);
 			}
 			
 			addDiv('linea','','');
@@ -69,7 +70,7 @@
 			echo '<br>';
 			$products->tablaProductosSeleccionados();
 			
-			echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
+			echo '<br><table bgColor=#333 cellspacing=1 cellpadding=2 width=590>';
 			echo '<tr><td><b>Número de Pedido</b></td><td>';
 			echo $this->get_detail(numero_pedido);
 

@@ -13,13 +13,71 @@ Copyright 2007
 
 
 /***************************************Layers********************************************/
-#Container{width: 752px;margin: 0 auto;background-color: #ffffff;border: 1px solid black;line-height: 130%;}
+#Container{width: 800px;margin: 0 auto;background-color: #ffffff;border: 1px solid #999999;line-height: 130%;
+-moz-border-top-left-radius: 10px;
+border-top-left-radius: 10px;
+-moz-border-top-right-radius: 10px;
+border-top-right-radius: 10px;
+}
+
 #linea {border: solid;border-width: 1px 0px 0px; border-color: #cccccc black black}
 #Content {text-align: left;margin-top:20px;padding: 1em;width:95%;}
-#Header {height:100px;text-align:left;margin:0px auto;margin-bottom:10px;padding:0px;padding-top:10px}
-#Footer {clear: left;width: 100%;text-align:center;background-color:#000000;font-size: 9px;
-		border-color: #CCCCCC ; border-style: solid; border-width: 1px 0px 0px;	
+#Header {height:70px;text-align:left;margin:0px auto;margin-bottom:10px;padding:0px;padding-top:10px;position:relative}
+
+#login_info
+{
+	position:absolute;
+	top:10px;
+	right:7px;
+	width:160px;
+	font: 67.5% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
 }
+
+#login_info a
+{
+	color:#2580a2;
+}
+
+#Footer {
+	height:30px;
+clear: left;width: 100%;text-align:center;
+		border-color: #CCCCCC ; border-style: solid; border-width: 1px 0px 0px;	
+		border-radius:0px;
+		background: #333;
+		color: #ccc;
+		font: 67.5% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+}
+
+#menu {
+	background: #333;
+	float: left;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+#menu li {
+	float: left;
+	font: 67.5% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+#menu a {
+	background: #333 url("../img/seperator.gif") bottom right no-repeat;
+	color: #ccc;
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 8px 12px;
+	text-decoration: none;
+	font-weight:normal;
+}
+#menu a:hover {
+	background: #2580a2 url("../img/hover.gif") bottom center no-repeat;
+	color: #fff;
+	padding-bottom: 8px;
+	}
+
 #menuh {font: 11px Verdana;padding-left:10px;padding-right:10px;padding-top:5px;height:20px;
 		text-align:right;background-color:black;color:white;
 	border-color: #CCCCCC ; border-style: solid; border-width: 1px 0px 1px;
@@ -32,16 +90,49 @@ Copyright 2007
 #Header img{margin:10px 0px 0px 15px;}
 #menuh td { font-size:11px;color:white}
 #content td { font-size:11px;background-color:#FFFFFF}
-#content th { font-size:11px;color:#FFFFFF;background-color:#000000;}
-#Footer p {font-family: Verdana;font-size: 9px;color: #ffffff;text-decoration: none;margin:0;padding:0px 10px;}
+#content th { 
+	background: #333 url("../img/seperator.gif") bottom right no-repeat;
+	font: 67.5% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+	color: #ccc;
+}
+#Footer p {margin:0;padding:5px 10px;}
 
 /***************************************Classes********************************************/
 .mainText { font-family: Verdana; font-size: 11px; color: #000000;}
 .black {font-weight: bold}
 .blackSmall {font-weight: bold;font-size: 9px;}
-.tableAbm{ width:600px; background-color:black; }
-.combo { color: #000000; background: #ffffff; border: 1px solid #000000; font-family: Verdana;  font-size: 11px; }
-.button{font-weight:bold;color:red;background-color:#333333;}
+.tableAbm{ width:600px; background-color:#333333 }
+.combo { color: #000000; background: #ffffff; border: 1px solid #999999; font-family: Verdana;  font-size: 11px; }
+
+.button{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #ffffff;
+	padding: 2px 10px;
+	background: -moz-linear-gradient(
+		top,
+		#9e9e9e 0%,
+		#212121);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#9e9e9e),
+		to(#212121));
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border: 1px solid #424242;
+	-moz-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 10px rgba(087,087,087,0.7);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 10px rgba(087,087,087,0.7);
+	text-shadow:
+		0px -1px 0px rgba(000,000,000,0.4),
+		0px 1px 0px rgba(255,255,255,0.3);
+		cursor:pointer;
+}
+
 .underline{text-decoration:underline;}
 .submit input{color: #000000;background: #ffa20f;border: 2px outset #d7b9c9;} 
 .tableAbm td{text-align:center;}
@@ -56,11 +147,11 @@ a{ text-decoration:none;color:white;}
 a:hover{color:red;}
 
 hr {color: #CCCCCC;background-color: #CCCCCC;height: 1px;}
-fieldset{border: 1px solid #000000;width: 35em}
-legend{color: #000000;background: #ffffff;border: 1px solid #000000;padding: 2px 6px} 
+fieldset{border: 1px solid #999999;width: 35em}
+legend{color: #000000;background: #ffffff;border: 1px solid #999999;padding: 2px 6px} 
 label { width: 8em; float: left; text-align: right; margin-right: 0.5em; display: block;}
-input{color: #000000;background: #ffffff;border: 1px solid #000000;font-family: Verdana;font-size: 10px;}
-textarea{color: #000000;background: #ffffff;border: 1px solid #000000;font-family: Verdana; font-size: 10px; }
+input{color: #000000;background: #ffffff;border: 1px solid #999999;font-family: Verdana;font-size: 10px;}
+textarea{color: #000000;background: #ffffff;border: 1px solid #999999;font-family: Verdana; font-size: 10px; }
 img{ border : 0px; }
 img.floatLeft {float:left;margin-left:4px;margin-right:10px;margin-bottom:4px;}
 img.floatRight {float:right;margin-left: 4px;margin-right:4px;margin-bottom: 4px;}

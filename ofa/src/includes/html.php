@@ -62,25 +62,25 @@
 <div id="Container">
 	
 	<div id="Header"> 
-		<img src="img/biosintex_ofar.jpg" class=floatLeft>
-		<img src="img/erp_small.jpg" class=floatRight style=margin-top:60px>
-	</div>
-	
-	 <div id="Menuh">
-			<table border=0 cellpadding=0 cellspacing=0 width=100%>
-				<tr>
-					<td align=left><?php $pagina->menu();?></td>
-					<td align=right>
-					<?php
+		<img src="img/biosintex_ofar.jpg" class="floatLeft">
+		<img src="img/erp.png" class="floatRight" width="140" style="margin-top:30px;margin-right:5px">
+
+		<div id="login_info">
+			<?php
 					if (logged()){ 
 						echo "Logged as ".$_SESSION ['username'];
 						echo '&nbsp;<a href=logout.php>[salida]</a>';
 					}
 					?>
-					</td>
-				</tr>
-			</table>
 		</div>
+	</div>
+
+
+	<ul id="menu">
+	<?php $pagina->menu();?>
+	</ul>
+
+<br>
 	  	
   <div id="Content" class="mainText"> 
   <center>
@@ -92,9 +92,7 @@
 	?>
 	</center>
   </div>
-	<div id="Footer">
-    <p>ERP Solutions Copyright 2007 All Rights Reserved</p>
-	</div>
+	<div id="Footer"><p>ERP Solutions</p></div>
 </div>
 </center>
 </body>

@@ -49,7 +49,6 @@
 	{
 		//detalle html del cliente, razon social, direccion, etc
 		iniciarForm ('frmAdd',cls_page::get_filename(), 'GET');
-		addDiv('linea','','');
 
 		$customer->html_detail();
 		$customer->comboSelectorDireccion($address_id,$user->get_detail(salesrep_id) );
@@ -113,7 +112,7 @@
 		<?php
 		$products->tablaProductos(); //Muestro la tabla de edicion de la orden
 		
-		echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
+		echo '<br><table bgColor=#333 cellspacing=1 cellpadding=2 width=700>';
 		
 
 		echo '<tr><td width=150><b>Tipo de Pedido</b></td><td>';

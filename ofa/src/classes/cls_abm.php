@@ -108,11 +108,11 @@
 				hidden ('id',0);
 				
 				echo '<div style=width:100%;overflow:auto>';
-				echo '<table align=center class=tableAbm cellspacing=1>'.$retorno;
+				echo '<table align=center class=tableAbm cellspacing=1 cellpadding=2>'.$retorno;
 				
 				echo '<tr>'.$retorno;
 				for ($i = 0; $i < $fldNumber ; $i++){
-					echo '<th>' . $rs->FetchField($i)->name . '</th>'.$retorno;
+					echo '<th>' . ucwords( str_replace ( "_" , "&nbsp;" , $rs->FetchField($i)->name ) ) . '</th>'.$retorno;
 				}
 				echo '</tr>';
 				

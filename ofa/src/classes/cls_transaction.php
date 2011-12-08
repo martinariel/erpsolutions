@@ -105,31 +105,32 @@
 			hidden ( 'state', $estado );
 			cerrarForm();
 			
-			addDiv('linea');
 			iniciarForm ('frmBuscador',cls_page::get_fileName(),'GET','');
 			
 			echo 'Código:&nbsp;';
 			textBox ('','code',$codigo,false,'','',6,5);
+			echo '&nbsp;';
 			echo '&nbsp;';
 			
 			echo 'Creado:&nbsp;';
 			$sql = 'select user_id, username from users order by username';
 			comboBox ($this->db,$sql,'','user',$user,'' ,false);
 			echo '&nbsp;';
+			echo '&nbsp;';
 			
 			echo 'Impresiones:&nbsp;';
 			textBox ('','impresiones',$impresiones,false,'','',6,5);
+			echo '&nbsp;';
 			echo '&nbsp;';
 			
 			echo 'Estado:&nbsp;';
 			$sql = 'select state_id, description from transaction_states';
 			comboBox ($this->db,$sql,'','state',$estado,'' ,false);
 			echo '&nbsp;';
-			
-			
-			echo '<br><br>';
-			buttonTable ('Buscar', "$('frmBuscador').submit()");
-			buttonTable ('Imprimir B&uacute;squeda', "$('frmPrint').submit()");
+			echo '&nbsp;';
+			button ('Buscar', "$('frmBuscador').submit()");
+			echo '&nbsp;';
+			button ('Imprimir B&uacute;squeda', "$('frmPrint').submit()");
 			cerrarForm();
 			addDiv('linea');
 			echo '<br>';
@@ -197,7 +198,7 @@
 			echo '<br>';
 			$products->tablaProductosSeleccionados();
 			
-			echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
+			echo '<br><table bgColor=#333333 cellspacing=1 cellpadding=2 width=590>';
 			echo '<tr><td><b>Número de Pedido</b></td><td>';
 			echo $this->get_detail(numero_pedido);
 
@@ -254,7 +255,7 @@
 			if ($rs && !$rs->EOF)
 			{
 				
-				echo '<table bgColor=#000000 cellspacing=1 cellpadding=4>';
+				echo '<table bgColor=#333333 cellspacing=1 cellpadding=4>';
 				echo '<tr><th>Código</th><th>N°Pedido</th><th>Creado</th><th>Fecha Creaci&oacute;n</th><th>Modificado</th><th>Fecha Modificaci&oacute;n</th><th>Impresiones</th><th>Estado</th><th>Cambiar<br>Estado</th><th></th></tr>';
 				
 				while (!$rs->EOF)
