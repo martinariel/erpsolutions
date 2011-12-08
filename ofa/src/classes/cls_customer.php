@@ -67,17 +67,21 @@
 			echo '<br>';
 		}
 		
-		public function comboSelectorDireccion($address_id, $salesrep_id = 0) {
+		//----------------------------------------------------------------------
+
+		public function comboSelectorDireccion($address_id, $salesrep_id = 0) 
+		{
 			$id = $this->get_id();
 			
 			$sql = "select count(*) from $this->table_name where $this->id_field = $id and ($salesrep_id = 0 or salesrep_id = $salesrep_id)";
 			$rs = $this->db->ejecutar_sql($sql);
 			
-			if ( $rs && !$rs->EOF ) {
-			
+			if ( $rs && !$rs->EOF ) 
+			{
 				$total = $rs->fields[0] + 0;
 				
-				if ($total > 1) {
+				if ($total > 1) 
+				{
 				
 					?>
 					<table align="center" width=700>
@@ -95,20 +99,18 @@
 			}
 		}
 		
+		//----------------------------------------------------------------------
 		
 		//validate user->salesrep_id against this->get_detail(salesrep_id)
-		public function validate(&$user){
-			if ($user->get_detail(salesrep_id) == $this->get_detail(salesrep_id) ){
-				return true;
-			}
-			else {
-				return false;
-			}
+		public function validate(&$user)
+		{
+			return $user->get_detail(salesrep_id) == $this->get_detail(salesrep_id);
 		}
 		
-		
+		//----------------------------------------------------------------------
 			
-		public function printXml ($busqueda,$pos,$user_id){
+		public function printXml ($busqueda,$pos,$user_id)
+		{
 			$pos = cls_sql::numeroSQL($pos);
 			$sql = "SELECT customer_id, customer_name from ra_customers where ".
 					" salesrep_id = (select salesrep_id from users where user_id = $user_id ) ".
@@ -121,8 +123,10 @@
 			else
 				echo "<complete add='true'>";
 			
-			if ($rs){
-				while (!$rs->EOF){
+			if ($rs)
+			{
+				while (!$rs->EOF)
+				{
 					$value = $rs->fields[0];
 					$text  = $rs->fields[1];
 					echo "<option value=\"$value\">$text</option>";

@@ -183,9 +183,10 @@
 						case 'inventory_item_id' : $product_id = intval ( $key['value'] ); break;
 						case 'custom_modo'       : $modo       = intval ( $key['value'] ); break;
 						case 'ordered_quantity'  : $cantidad   = intval ( $key['value'] ); break;
+						case 'unit_selling_price': $precio     = $key['value'] ; break;
 					}
 				}
-				$products->agregarExterno($product_id,$modo,$cantidad);
+				$products->agregarExterno($product_id , $modo, $precio ,$cantidad);
 			}
 			
 			addDiv('linea','','');
@@ -233,7 +234,7 @@
 		{
 			addJs ('js/transaction.1.2.js');
 			
-			$sql = $this->get_select_query();
+			$sql  = $this->get_select_query();
 			$sql .= " where $this->id_field >0";
 			$sql .= ' and ' . $this->tablaFiltros();
 			$sql .= " order by created DESC";

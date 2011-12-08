@@ -20,25 +20,25 @@
 			parent::__construct($db,'mtl_system_items_b', $id,'inventory_item_id');
 		}
 
+		//---------------------------------------------------------------------
+
+		public function exento()
+		{
+			return strtolower($this->get_detail(global_attribute2)) != 't-bienes';
+		}
+
 		//----------------------------------------------------------------------
 		
 		//Devuelve el precio con iva si es que el producto no esta exento
-		public function precio_con_iva ($precio) 
+		public function precio_con_iva ( $precio ) 
 		{
-			if ($this->get_modo() == 0) 
+			if ( !$this->exento() ) 
 			{
-				if (strtolower($this->get_detail(global_attribute2)) == 't-bienes') 
-				{
-					return round($precio  + ($precio*self::iva) , 2);
-				}
-				else 
-				{
-					return $precio;
-				}
+				return round($precio  + ($precio*self::iva) , 2);
 			}
-			else
+			else 
 			{
-				return 0;
+				return $precio;
 			}
 		}
 
@@ -62,21 +62,14 @@
 		public function set_precioUnidad ( $precio )
 		{
 			$this->precioUnidad = $precio;
-			$this->set_detail ( custom_price , ( $this->get_modo() == 0 ) ? $precio : 0 );
+			$this->set_detail ( custom_price , $precio );
 		}
 
 		//----------------------------------------------------------------------
 		
 		public function get_precioUnidad()
 		{
-			if ($this->get_modo() == 0) 
-			{
-				return $this->precioUnidad;
-			}
-			else 
-			{
-				return 0;
-			}
+			return $this->precioUnidad;
 		}
 
 		//----------------------------------------------------------------------
@@ -98,29 +91,48 @@
 		
 		public function get_precioTotalIva ()
 		{
-			if ($this->get_modo() == 0){
-				return $this->cantidad * $this->precio_con_iva ( $this->precioUnidad );
-			}
-			else
-			{
-				return 0;
-			}
+			return $this->cantidad * $this->precio_con_iva ( $this->precioUnidad );
 		}
 
 		//----------------------------------------------------------------------
 		
 		public function get_precioTotalSinIva ()
-		{
-			if ($this->get_modo() == 0){
-				return $this->cantidad * $this->precioUnidad;
-			}
-			else
-			{
-				return 0;
-			}
+		{			
+			return $this->cantidad * $this->precioUnidad;
 		}
 
 		//----------------------------------------------------------------------
+
+		public function printXml ($busqueda,$pos,$user_id)
+		{
+			$habilitados = $_SESSION['PRODUCTOS'];
+
+			$pos = cls_sql::numeroSQL($pos);
+			$sql = "SELECT inventory_item_id, CONCAT( segment1 , ' ' , description ) from mtl_system_items_b where ".
+					" CONCAT( segment1 , ' ' , description )  like '%$busqueda%' limit $pos,100";
+						
+			$rs = $this->db->ejecutar_sql($sql);
+			
+			if ($pos == 0)
+				echo '<complete>';
+			else
+				echo "<complete add='true'>";
+			
+			if ($rs)
+			{
+				while (!$rs->EOF)
+				{
+					$value = $rs->fields[0];
+					if ( in_array ( $value , $habilitados ) )
+					{
+						$text  = $rs->fields[1];
+						echo "<option value=\"$value\">$text</option>";
+					}
+					$rs->MoveNext();
+				}
+			}
+			echo '</complete>';
+		}
 		
 	}
 ?>

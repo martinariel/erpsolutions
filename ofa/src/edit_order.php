@@ -47,7 +47,6 @@
 	//el salesrep_id del usuario es igual al salesrep_id del cliente
 	if ( $customer->validate($user) ) 
 	{
-		
 		//detalle html del cliente, razon social, direccion, etc
 		iniciarForm ('frmAdd',cls_page::get_filename(), 'GET');
 		addDiv('linea','','');
@@ -71,7 +70,8 @@
 			hidden ( 'customer_id'   , $customer->get_id() );
 			hidden ( 'address_id'    , $customer->get_detail(address_id) );
 
-			$list->comboSelector('frmList'); //Combo selector de listas de precios
+			$list->comboSelector('frmList'); //Combo selector de listas de precio
+
 			cerrarForm();
 		}
 		else 
@@ -80,6 +80,11 @@
 		}
 		//********************************************************************
 		
+		iniciarForm ('frmProducto',cls_page::get_filename() , 'GET' , '' , true);
+		ajaxComboBox('xml_products.php','combo_producto','id_producto',"<b>Producto:</b>", 0 , 300 , 'Agregar' , 'agregar_producto()');
+		cerrarForm(true);
+
+
 		// ******************* Formulario de edicion de la orden  *********************
 		iniciarForm ('frmEdit','save_order.php');
 
@@ -88,7 +93,24 @@
 		hidden ( 'customer_id'   , $customer->get_id()   );
 		
 		$products = new cls_product_container($db,$list);
-		$products->load($list->productos_existentes() ); //cargo los productos de la lista de precios
+
+		//cargo los productos de la lista de precios + las muestras
+		$products->load ( $list->productos_existentes() , true); 
+
+		?>
+		<script language="javascript">
+		var productos = <?php echo $products->json(); ?>
+		
+		var idxProductos = [];
+		
+		for ( var i = 0 ; i < productos.length ; i++ )
+		{
+			idxProductos[productos[i].Id] = i;
+		}
+		 
+		</script>
+		
+		<?php
 		$products->tablaProductos(); //Muestro la tabla de edicion de la orden
 		
 		echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';

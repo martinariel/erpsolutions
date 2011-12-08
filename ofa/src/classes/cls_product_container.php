@@ -16,7 +16,7 @@
 		
 		function __construct ( cls_sql &$db , cls_list_price &$list_price) 
 		{
-			$this->db = $db;
+			$this->db         = $db;
 			$this->list_price = $list_price;
 		}
 		
@@ -37,7 +37,7 @@
 		/*
 		Cargo los productos en el vector arrProducts
 		*/
-		public function load ( $stringId = '*') 
+		public function load ( $stringId = '*' , $cargarMuestras = false ) 
 		{
 			
 			$dummie = $this->getDummie();
@@ -56,8 +56,22 @@
 			$sql .= $this->condiciones();
 			$sql .= ' order by description';
 			
+			$productos = array();
+
 			//AGREGO LOS PRODUCTOS
-			$this->pushVector($sql);
+			$this->pushVector( $sql , $productos , 0 );
+
+			if ( $cargarMuestras )
+			{
+				$sql  = $dummie->get_select_query();
+				$sql .= ' where ';
+				$sql .= $this->condicionesPromo();
+				$sql .= ' order by description';
+				
+				$this->pushVector( $sql , $productos , 2 );
+			}
+
+			$_SESSION['PRODUCTOS'] = $productos;
 		}
 
 		//----------------------------------------------------------------------
@@ -91,64 +105,48 @@
 
 		//----------------------------------------------------------------------
 		
-		public function comboProductos ($nombre,$indice=0) 
-		{
-		
-			$idFld = $this->getDummie()->get_id_field();
-			$nameFld = 'description';
-			$tabla = $this->getDummie()->get_table_name();
-
-			$sql = "select $idFld,$nameFld from $tabla";
-			$sql.= ' where ' . $this->condicionesPromo();
-			$sql.= ' order by segment1';
-			
-			comboBox ( $this->db, $sql,"", $nombre,0,"setCheck(this.value, $indice)",false,1);
-			//javascript para setear el check del combo por default
-			?>
-			<script language=javascript>
-				var combo = $('<?php echo $nombre ?>');
-				
-				if (combo) {
-					setCheck(combo.value, <?php echo $indice ?>);
-				}
-			</script>
-			<?php
-		}
-
-		//----------------------------------------------------------------------
-		
-		private function pushVector($sql)
+		private function pushVector( $sql , &$productos , $modo  )
 		{
 			$ret = array();
+
 			$rs = $this->db->ejecutar_sql($sql);
+
 			if ( $rs && !$rs->EOF)
 			{
 				$arr = $rs->GetRows();
 				
 				foreach ($arr as $arr1) 
 				{
-					$obj = new cls_product ($this->db,$arr1[0]);
+					$obj = new cls_product ( $this->db, $arr1[0]);	
+
+					$obj->set_modo ( $modo );
 					$obj->set_details($arr1);
-					array_push ($this->arrProducts, $obj);
+
+					array_push ( $this->arrProducts , $obj     );
+					array_push ( $productos         , $arr1[0] );
+
 					$ret = &$this->arrProducts[count($this->arrProducts)-1];
 				}	
 			}
+
 			return $ret;
 		}
 		
 		//----------------------------------------------------------------------
 
-		private function addProduct ($id,$modo=0) 
+		private function addProduct ( $id , $modo = 0 ) 
 		{
 			$dummie = new cls_product($this->db);
 
 			$sql         = $dummie->get_select_query();
 			$id	         = cls_sql::numeroSQL($id);
 			$fld         = $dummie->get_id_field();
-			$condiciones = ($modo == 2)? $this->condicionesPromo() : $this->condiciones();
+			$condiciones = ( $modo > 0 )? $this->condicionesPromo() : $this->condiciones();
 			$sql         = "$sql where  $fld = $id and $condiciones";
 			
-			return $this->pushVector($sql);
+			$productos = array();
+
+			return $this->pushVector( $sql , $productos , $modo);
 		}
 		
 		//----------------------------------------------------------------------
@@ -157,17 +155,19 @@
 		{
 			$totalProductos = intval($_POST ['iter']); //numero de productos
 			
-			for ( $i = 0 ; $i < $totalProductos; $i++)
+			for ( $i = 0 ; $i < $totalProductos ; $i++)
 			{
-				$valor = $_POST ["check_$i"];
-				
-				if ( $valor != '')
+				$id       = $_POST ["check_$i" ];
+				$precio   = $_POST ["precio_$i"];
+				$modo     = $_POST ["modo_$i"  ];
+
+				$cantidad = intval( $_POST ["txt_$i"] );
+
+				if ( $id != '')
 				{
-					$cantidad = intval($_POST ["txt_$i"]);
-					if ($cantidad > 0)
+					if ( $cantidad > 0 )
 					{
-						$modo = intval($_POST ["modo_$i"]);
-						$this->agregarExterno($valor,$modo,$cantidad);
+						$this->agregarExterno( $id , $modo , $precio , $cantidad );
 					}
 				}
 				
@@ -176,13 +176,11 @@
 		
 		//----------------------------------------------------------------------
 		
-		public function agregarExterno ( $product_id , $modo , $cantidad )
-		{
-			$precio	= $this->list_price->get_product_price ( $product_id);
-			
-			if ($product_id != 0 ) 
+		public function agregarExterno ( $product_id , $modo , $precio , $cantidad )
+		{	
+			if ( $product_id != 0 ) 
 			{
-				$producto = $this->addProduct ( $product_id , $modo);
+				$producto = $this->addProduct ( $product_id , $modo );
 				
 				$producto->set_modo         ( $modo     );
 				$producto->set_precioUnidad ( $precio   );
@@ -193,119 +191,59 @@
 
 		//----------------------------------------------------------------------
 		
+		public function json () 
+		{
+			$ret   = "[";
+			$first = true;
+
+			foreach ( $this->arrProducts as $arr ) 
+			{	
+				$id          = $arr->get_detail ( inventory_item_id );
+				$precio      = $this->list_price->get_product_price ( $id ) + 0;
+				$description = $arr->get_detail ( description );
+				$precioIva   = $arr->precio_con_iva($precio);
+				$modo        = $arr->get_modo();
+				$exento      = $arr->exento() ? 'true' : 'false';
+
+				if ( !$first)
+				{
+					$ret .= ",\n";
+				}
+
+				$ret .= '{ "Id":'          . $id          . ',';
+				$ret .= ' "Precio":'       . $precio      . ',';
+				$ret .= ' "Descripcion":"' . $description . '",';
+				$ret .= ' "Modo":'         . $modo        . ',';
+				$ret .= ' "Exento":'       . $exento      . ',';
+				$ret .= ' "PrecioIva":'    . $precioIva   . '}';
+
+				$first = false;
+
+			}
+
+			$ret .= ']';
+
+			return $ret;
+		}
+
+		//----------------------------------------------------------------------
+
 		/*
 		Tabla de seleccion de productos
 		*/
 		public function tablaProductos () 
-		{
-			$combos = 2;
-		
+		{		
 			//Javascript !!!
 			addJs('js/products_table.js');
-			hidden ('iter',(count ($this->arrProducts) * 2)+$combos); 
+			hidden ('iter',0); 
 			
-			echo '<table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
-			echo '<tr><th>Lleva</th><th>Cantidad</th><th>Producto</th><th>Precio<br>sin Iva</th><th>Precio<br>con Iva</th><th>Total</th></tr>';
-			
-			$i=0;
-			
-			foreach ( $this->arrProducts as $arr ) 
-			{	
-				$id     = $arr->get_detail(inventory_item_id);
-				$precio = $this->list_price->get_product_price ( $id );
-				
-				echo '<tr>';
-				echo "<td>";
-				check ("check_$i",$id,"updatePrice($i)",'');
-				echo '</td>';
-				
-				echo '<td width=50>';
-				textBox ('',"txt_$i",'0',false,'border:0;font-size:12px;width:100%',"onblur=updatePrice($i)",6);
-				echo '</td>';
-				
-				echo "<td><b>"              . $arr->get_detail(description) . '</b></td>';
-				echo "<td id=unit_neto_$i>" . $precio                       . '</td>';
-				echo "<td id=unit_$i>"      . $arr->precio_con_iva($precio) . "</td>";
-				echo "<div id=neto_$i style=display:none>0</div>";
-				echo "<td id=total_$i>0</td>";
-				echo '</tr>';
-				
-				hidden ("modo_$i", 0);
-				
-				$i++;
-				
-				//valor 0
-				echo '<tr>';
-				echo "<td id=celda_check_$i>";
-				check ("check_$i",$id,"updateNoPrice($i)",'');
-				echo '</td>';
-				
-				echo '<td width=50>';
-				textBox ('',"txt_$i",'0',false,'border:0;font-size:12px;width:100%',"onblur=updateNoPrice($i)",6);
-				echo '</td>';
-				
-				echo '<td><span style=color:green><b>'.$arr->get_detail(description).'</b></span></td>';
-				echo '<td>0</td>';
-				echo '<td>0</td>';
-				echo "<div id=neto_$i style=display:none>0</div>";
-				echo "<td id=total_$i>0</td>";
-				echo '</tr>';
-				
-				hidden ("modo_$i", 1);
-				$i++;
-			}
-			
-			for ($j = $i ; $j < $i+$combos ; $j++) 
-			{
-			
-				echo '<tr>';
-				echo "<td id=celda_check_$j>";
-				check ("check_$j",0,"updateNoPriceMuestras($j)",'');
-				echo '</td>';
-				
-				echo '<td width=50>';
-				textBox ('',"txt_$j",'0',false,'border:0;font-size:12px;width:100%',"onblur=updateNoPriceMuestras($j) tipo=3",6);
-				echo '</td>';
-				
-				echo '<td>';
-				$this->comboProductos("combo_$j",$j);
-				echo '</td>';
-				
-				echo '<td>0</td>';
-				echo '<td>0</td>';
-				echo "<div id=neto_$j style=display:none>0</div>";
-				echo "<td id=total_$j>0</td>";
-				echo '</tr>';
-				
-				hidden ("modo_$j", 2);
-				
-			}
-			
-			echo '<tr>';
-			echo "<td id=celda_check_$j>";
-			check ("check_$j",0,"updateNoPriceMuestras($j)",'');
-			echo '</td>';
-			
-			echo '<td width=50>';
-			textBox ('',"txt_$j",'0',false,'border:0;font-size:12px;width:100%',"onblur=updateNoPriceMuestras($j) tipo=3",6);
-			echo '</td>';
-			
-			echo '<td>';
-			$this->comboProductos("combo_$j",$j);
-			echo '</td>';
-			
-			
-			echo '<td>0</td>';
-			echo '<td>0</td>';
-			echo "<div id=neto_$j style=display:none>0</div>";
-			echo "<td id=total_$j>0</td>";
-			echo '</tr>';
-			
-			hidden ("modo_$j", 2);
-			
+			echo '<table id="tabla_productos" bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
+			echo '<tr><th>Cantidad</th><th>Producto</th><th>Precio<br>sin Iva</th><th>Precio<br>con Iva</th><th>Total Neto</th><th>Total</th></tr>';
 
+			echo '</table>';
+
+			echo '<table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
 			$this->tablaSumatoria();
-			
 			echo '</table>';			
 		}
 
