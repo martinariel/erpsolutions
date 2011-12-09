@@ -62,7 +62,7 @@
 <div id="Container">
 	
 	<div id="Header"> 
-		<img src="img/biosintex_ofar.jpg" class="floatLeft">
+		<img src="img/logo.png" class="floatLeft">
 		<img src="img/erp.png" class="floatRight" width="140" style="margin-top:30px;margin-right:5px">
 
 		<div id="login_info">

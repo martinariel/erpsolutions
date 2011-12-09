@@ -17,8 +17,8 @@
 	echo '<div style=height:300px>';
 	iniciarForm('frmLogin','login.php','post','',true);
 
-	textBox         ('User'     , 'txtUser' , '' );
-	textBoxPassword ('Password' , 'txtPwd'  ,'return keyPressLogin(event)');
+	textBox         ('Usuario:'     , 'txtUser' , '' );
+	textBoxPassword ('Contrase&ntilde;a:' , 'txtPwd'  ,'return keyPressLogin(event)');
 	
 	buttonTable ('Entrar','doLogin()');
 	

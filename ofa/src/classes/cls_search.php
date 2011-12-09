@@ -10,7 +10,8 @@
 	TODO: ordenamiento de resultados, paginacion de resultados.
 	*/
 	
-	class cls_search {
+	class cls_search 
+	{
 		
 		protected $tabla;
 		protected $camposView;
@@ -28,15 +29,23 @@
 		const search_field='field';
 		
 		
-		function __construct ( cls_sql_table &$tabla , $campoClick = 0, $accionClick = '', $datosCampoClick = array(0), $noView = array() ) {
-			$this->tabla = $tabla;
-			$this->campoClick  = $campoClick;
-			$this->accionClick = $accionClick;
+		//----------------------------------------------------------------------
+	
+		function __construct ( cls_sql_table &$tabla , $campoClick = 0, 
+			                   $accionClick = '', $datosCampoClick = array(0),
+			                   $noView = array() ) 
+	    {
+			$this->tabla          = $tabla;
+			$this->campoClick     = $campoClick;
+			$this->accionClick    = $accionClick;
 			$this->arrCamposClick = $datosCampoClick;
-			$this->noview = $noView;
+			$this->noview         = $noView;
 		}
+
+		//----------------------------------------------------------------------
 		
-		public function iniciar ( $CamposView ,$CamposAlias, $CamposSearch, $arrWhere, $CaptionOpciones ) {
+		public function iniciar ( $CamposView ,$CamposAlias, $CamposSearch, $arrWhere, $CaptionOpciones ) 
+		{
 			
 			$this->camposView  		   = $CamposView;
 			$this->camposSearch		   = $CamposSearch;
@@ -46,8 +55,11 @@
 			
 			$this->modeSelector ($_GET [self::search_query], $_GET [self::search_field] );
 		}
+
+		//----------------------------------------------------------------------
 		
-		private function modeSelector ( $busqueda , $idFld ){
+		private function modeSelector ( $busqueda , $idFld )
+		{
 			$this->buscador($busqueda , $idFld);
 			
 			$sql = $this->sqlTranslator($busqueda,$idFld);
@@ -55,11 +67,14 @@
 			if ( $sql != '' ) 
 				$this->tablaResultados ($sql);
 		}
+
+		//----------------------------------------------------------------------
 			
 		/*
 		Formulario de busqueda
 		*/
-		private function buscador($busqueda , $idFld) {
+		private function buscador($busqueda , $idFld) 
+		{
 			addDiv ('linea');
 			iniciarForm ('frmBuscador',cls_page::get_filename(), 'GET','',true);
 			
@@ -116,11 +131,14 @@
 			echo '<br>';
 		
 		}
+
+		//----------------------------------------------------------------------
 		
 		/*
 		Tabla de resultados de la busqueda
 		*/
-		private function tablaResultados ($sql) {
+		private function tablaResultados ($sql) 
+		{
 			//echo $sql;			
 			$rs = $this->tabla->db->ejecutar_sql($sql);
 			
@@ -181,12 +199,15 @@
 				echo 'No hubo resultados para su b&uacute;squeda.<br><br>';
 			}
 		}
+
+		//----------------------------------------------------------------------
 		
 		/*
 		Traduce a sentencia sql segun el parametro de campo de busqueda, la busqueda, las condiciones iniciales
 		y los alias de los campos.
 		*/
-		protected function sqlTranslator ( $busqueda, $idFld ) {
+		protected function sqlTranslator ( $busqueda, $idFld ) 
+		{
 			$tabla = $this->tabla->table_name;
 			$campos = '';
 			$where  = '';

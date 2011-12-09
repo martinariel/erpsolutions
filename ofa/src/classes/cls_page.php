@@ -9,7 +9,8 @@
 	@author Martin Fernandez
 	*/
 
-	class cls_page {
+	class cls_page 
+	{
 		private $id;
 		private $db;
 		private $page_name;
@@ -17,7 +18,8 @@
 		
 		const table='pages';
 		
-		function __construct ( &$db){
+		function __construct ( &$db)
+		{
 			$this->db = $db;
 			$this->validate();
 		}
@@ -40,18 +42,25 @@
 		public function menu()
 		{
 			$user_level = cls_sql::numeroSQL($_SESSION['user_level']);
-			$sql = "select page_url,page_name from pages where min_user_level_id <= $user_level and show_menu = true";
-			
-			$rs = $this->db->ejecutar_sql($sql);
-			
 
-			if ($rs) 
+			$sql = "select page_url,page_name from pages where min_user_level_id <= $user_level and show_menu = true";
+			$rs  = $this->db->ejecutar_sql($sql);
+			
+			$i = 0;
+			if ( $rs ) 
 			{
-				while(!$rs->EOF){
+				while( !$rs->EOF )
+				{
 					echo '<li><a href='.$rs->fields['page_url'] .'>'.$rs->fields['page_name'].'</a></li>';
 					$rs->MoveNext();
+					$i++;
 				}
 			}	
+
+			if ( $i == 0 )
+			{
+				echo '<li><a href=login.php>Login</a></li>';
+			}
 		}
 		
 		//Carga los datos de la pagina
