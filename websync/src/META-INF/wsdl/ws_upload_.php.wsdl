@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://ofar.com.ar/wInterface" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://ofar.com.ar/wInterface">
+<types>
+<xsd:schema targetNamespace="http://ofar.com.ar/wInterface"
+>
+ <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+ <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+</xsd:schema>
+</types>
+<message name="iniciarRequest">
+  <part name="entitie" type="xsd:string" /></message>
+<message name="iniciarResponse">
+  <part name="return" type="xsd:boolean" /></message>
+<message name="agregarRegistroRequest">
+  <part name="entitie" type="xsd:string" />
+  <part name="registro" type="xsd:string" /></message>
+<message name="agregarRegistroResponse">
+  <part name="return" type="xsd:boolean" /></message>
+<message name="finalizarRequest">
+  <part name="entitie" type="xsd:string" /></message>
+<message name="finalizarResponse">
+  <part name="return" type="xsd:boolean" /></message>
+<portType name="ofarWebInterfaceV1PortType">
+  <operation name="iniciar">
+    <documentation>Download</documentation>
+    <input message="tns:iniciarRequest"/>
+    <output message="tns:iniciarResponse"/>
+  </operation>
+  <operation name="agregarRegistro">
+    <documentation>Download</documentation>
+    <input message="tns:agregarRegistroRequest"/>
+    <output message="tns:agregarRegistroResponse"/>
+  </operation>
+  <operation name="finalizar">
+    <documentation>Download</documentation>
+    <input message="tns:finalizarRequest"/>
+    <output message="tns:finalizarResponse"/>
+  </operation>
+</portType>
+<binding name="ofarWebInterfaceV1Binding" type="tns:ofarWebInterfaceV1PortType">
+  <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="iniciar">
+    <soap:operation soapAction="http://ofar.com.ar/wInterface/#iniciar" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://ofar.com.ar/wInterface" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://ofar.com.ar/wInterface" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="agregarRegistro">
+    <soap:operation soapAction="http://ofar.com.ar/wInterface/#agregarRegistro" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://ofar.com.ar/wInterface" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://ofar.com.ar/wInterface" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+  <operation name="finalizar">
+    <soap:operation soapAction="http://ofar.com.ar/wInterface/#iniciar" style="rpc"/>
+    <input><soap:body use="encoded" namespace="http://ofar.com.ar/wInterface" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="http://ofar.com.ar/wInterface" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+</binding>
+<service name="ofarWebInterfaceV1">
+  <port name="ofarWebInterfaceV1Port" binding="tns:ofarWebInterfaceV1Binding">
+    <soap:address location="http://localhost/ERPSolutions/ofa/src/classes/ws_upload_.php"/>
+  </port>
+</service>
+</definitions>

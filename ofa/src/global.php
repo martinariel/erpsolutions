@@ -21,19 +21,22 @@
 	
 	$retorno="\r\n";
 	
-	function session_defaults() { 
-		$_SESSION['logged'] = false; 
-		$_SESSION['uid'] = 0;
-		$_SESSION['user_level'] = 0;
-		$_SESSION['username'] = ''; 
+	function session_defaults() 
+	{ 
+		$_SESSION [ 'logged'     ] = false; 
+		$_SESSION [ 'uid'        ] = 0;
+		$_SESSION [ 'user_level' ] = 0;
+		$_SESSION [ 'username'   ] = ''; 
 	} 
 	
 	
-	function logged(){
+	function logged()
+	{
 		return $_SESSION['logged'];
 	}
 	
-	if (!isset($_SESSION['uid'])) { 
+	if (!isset($_SESSION['uid'])) 
+	{ 
 		session_defaults(); 
 	}
 	
