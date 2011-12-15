@@ -98,9 +98,12 @@ var productos_agregados = [];
 
 function agregar_producto ()
 {
-	var id = document.frmProducto.id_producto.value;
+	var id = z.getSelectedValue();
 	if ( id <= 0 || id == undefined )
 		return;
+
+	z.setComboText("");
+	z.unSelectOption();
 
 	var producto = productos [ idxProductos[id] ];
 
@@ -192,7 +195,7 @@ function agregar_producto ()
 	td.innerHTML = "0";
 	tr.appendChild ( td );
 
-	document.getElementById("tabla_productos").appendChild ( tr );
+	document.getElementById("tabla_productos").firstChild.appendChild ( tr );
 
 	cantidad.focus();
 
