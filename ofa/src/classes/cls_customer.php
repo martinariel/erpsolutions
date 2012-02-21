@@ -26,8 +26,10 @@
 
 		//----------------------------------------------------------------------
 		
-		public function html_detail( $mostrar_saldo = false )
+		public function html_detail ( $mostrar_saldo = false )
 		{
+			$mostrar_saldo = true;
+
 			?>
 			<table align="center" width="700">
 				<tr>

@@ -1,8 +1,6 @@
 <?php
-
 	/*
 	Login de usuario
-	
 	@author Martin Fernandez
 	*/
 	
@@ -10,7 +8,7 @@
 	
 	$user->_logout();
 	
-	iniciarHtml($pagina);
+	iniciarHtml( $pagina );
 	
 	addJs('js/login.js');
 	
@@ -23,7 +21,7 @@
 	buttonTable ('Entrar','doLogin()');
 	
 	echo '<tr><td align=center colspan=2>';
-	addDiv ('resultado','style=color:red','');
+	addDiv ( 'resultado','style=color:red','');
 	echo '</td></tr>';
 	
 	cerrarForm(true);

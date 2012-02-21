@@ -81,7 +81,7 @@ function validarNumeroPedido(mensaje)
 	}
 	else 
 	{
-		alert(mensaje);	
+		alert ( mensaje );	
 	}
 }
 
@@ -91,6 +91,50 @@ function enviarOrden ()
 {
 	validar();
 }
+
+//----------------------------------------------------------------------
+
+function swap_id ( old_id , new_id, type , value ) 
+{
+	document.getElementById ( old_id ).setAttribute ( "id" , new_id );
+
+	if ( type != "id" && name != undefined )
+	{
+		document.getElementById ( new_id ).setAttribute ( type , value )	
+	}
+}
+
+//----------------------------------------------------------------------
+
+function reasignar_ids ( indice )
+{
+	for ( i = indice + 1 ; i < productos_agregados.length  ; i++)
+	{
+		var n = i - 1;
+
+		swap_id ( "fila_"      + i , "fila_"      + n , "id"   );
+		swap_id ( "txt_"       + i , "txt_"       + n , "name" , "txt_"    + n );
+		swap_id ( "check_"     + i , "check_"     + n , "name" , "check_"  + n );
+		swap_id ( "modo_"      + i , "modo_"      + n , "name" , "modo_"   + n );
+		swap_id ( "unit_neto_" + i , "unit_neto_" + n , "id"   , "precio_" + n );
+
+		document.getElementById ("unit_neto_" + n ).setAttribute ("indice" , n );
+		document.getElementById ("txt_"       + n ).setAttribute ("indice" , n );
+
+		swap_id ( "unit_"   + i , "unit_"   + n , "id" );
+		swap_id ( "neto_"   + i , "neto_"   + n , "id" );
+		swap_id ( "total_"  + i , "total_"  + n , "id" );
+		swap_id ( "borrar_" + i , "borrar_" + n , "id" );
+
+		document.getElementById ("borrar_" + n ).setAttribute ("indice" , n );
+	}
+
+
+}
+
+//----------------------------------------------------------------------
+
+var old_price = 0;
 
 //----------------------------------------------------------------------
 
@@ -114,6 +158,8 @@ function agregar_producto ()
 	var indice = productos_agregados.length - 1;
 
 	var tr  = document.createElement ("tr");
+	tr.setAttribute ( "id" , "fila_" + indice );
+
 	var td  = document.createElement ("td");
 
 	td.setAttribute ("width" , 50);
@@ -122,16 +168,19 @@ function agregar_producto ()
 	var hidden   = document.createElement ( "input" );
 	var modo     = document.createElement ( "input" );
 
-	cantidad.setAttribute ("name"  , "txt_" + indice );
-	cantidad.setAttribute ("id"    , "txt_" + indice );
-	cantidad.setAttribute ("style" , "border:0;font-size:12px;width:100%");
+	cantidad.setAttribute ( "name"  , "txt_" + indice );
+	cantidad.setAttribute ( "id"    , "txt_" + indice );
+	cantidad.setAttribute ( "indice", indice );
+	cantidad.setAttribute ( "style" , "border:0;font-size:12px;width:100%");
 
 	hidden.setAttribute ("type" , "hidden" );
 	hidden.setAttribute ("name" , "check_" + indice );
+	hidden.setAttribute ("id"   , "check_" + indice );
 	hidden.value = id;
 
 	modo.setAttribute ( "type" , "hidden" );
 	modo.setAttribute ( "name" , "modo_" + indice );
+	modo.setAttribute ( "id"   , "modo_" + indice );
 	modo.value = producto.Modo;
 
 	if ( producto.Modo > 0 )
@@ -141,7 +190,7 @@ function agregar_producto ()
 
 	cantidad.onblur = function()
 	{
-		updatePrice ( indice );	
+		updatePrice ( Number ( this.getAttribute("indice")) );	
 	};
 
 	td.appendChild ( cantidad );
@@ -157,9 +206,10 @@ function agregar_producto ()
 
 	var precio = document.createElement("input");
 
-	precio.setAttribute ("name"  , "precio_"    + indice );
-	precio.setAttribute ("id"    , "unit_neto_" + indice );
-	precio.setAttribute ("style" , "border:0;font-size:12px;width:100%");
+	precio.setAttribute ( "name"  , "precio_"    + indice );
+	precio.setAttribute ( "id"    , "unit_neto_" + indice );
+	precio.setAttribute ( "style" , "border:0;font-size:12px;width:100%");
+	precio.setAttribute ( "indice" , indice );
 
 	if ( producto.Modo > 0 )
 	{
@@ -168,9 +218,21 @@ function agregar_producto ()
 
 	precio.value = producto.Precio;
 
+	precio.onfocus = function ()
+	{
+		old_price = this.value;	
+	}
+
 	precio.onblur = function()
 	{
-		updatePrice ( indice );	
+		if ( this.value != old_price && Number ( this.value ) != 0 )
+		{
+			this.value = old_price;
+			alert ( "El precio solamente se puede editar a 0.")
+			return;
+		}
+
+		updatePrice ( Number ( this.getAttribute("indice")));	
 	};
 
 	td.setAttribute ("width" , 70);
@@ -194,6 +256,24 @@ function agregar_producto ()
 	td.setAttribute ( "id" , "total_" + indice );
 	td.innerHTML = "0";
 	tr.appendChild ( td );
+
+	td = document.createElement ( "td" );
+	td.setAttribute ( "id" , "borrar_" + indice );
+	td.innerHTML = "<img src='img/delete.gif'>";
+	td.setAttribute ("indice" , indice);
+	tr.appendChild ( td );
+
+	td.onclick = function ()
+	{
+		var idx = this.getAttribute ("indice");
+		
+		$('fila_' + idx ).remove();
+		reasignar_ids ( Number ( idx ) );
+		productos_agregados.splice ( idx , 1 ); 
+		sumarPrecios();
+		sumarCantidades();
+		
+	}
 
 	document.getElementById("tabla_productos").firstChild.appendChild ( tr );
 

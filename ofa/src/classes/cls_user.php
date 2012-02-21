@@ -27,7 +27,7 @@ class cls_user extends cls_sql_table
 		$strsql .= ' where UPPER(u.username) = ' . cls_sql::cadenaSQL ( strtoupper ( $user ) ) ;
 		$strsql .= ' and   u.password        = ' . cls_sql::cadenaSQL ( md5        ( $pass ) ) ;
 		
-		$rs = $this->db->ejecutar_sql($strsql); 
+		$rs = $this->db->ejecutar_sql ( $strsql ); 
 		
 		if ($rs)
 		{
@@ -43,6 +43,40 @@ class cls_user extends cls_sql_table
 			}
 		}
 		
+		return $ret;
+	}
+
+	//----------------------------------------------------------------------
+
+	public function getNumerosPedido ()
+	{
+		$ret = array();
+
+		for ( $i = $this->get_detail ( pedido_desde) ; $i <= $this->get_detail(pedido_hasta); $i++)
+		{
+			array_push ( $ret , $i );
+		}
+
+		$sql = "select numero_pedido from transactions where numero_pedido >= " . $this->get_detail ("pedido_desde") .
+			   " and numero_pedido <= " . $this->get_detail ( "pedido_hasta" );
+
+		$rs = $this->db->ejecutar_sql ( $sql );
+
+		$existen = array();
+
+		if ( $rs )
+		{
+			while ( !$rs->EOF )
+			{
+				array_push( $existen, $rs->fields[0] );
+				$rs->MoveNext();	
+			}
+		}
+
+		$ret = array_diff ( $ret , $existen );
+
+		asort ( $ret );
+
 		return $ret;
 	}
 
@@ -64,6 +98,8 @@ class cls_user extends cls_sql_table
 	{
 		session_defaults();
 	}
+
+	
 
 }
 ?>

@@ -1,17 +1,13 @@
 <?php
 
 	/*
-	
 	Formulario de seleccion de productos para el cliente seleccionado.
-	
 	Primero valida que el cliente pertenezca al salesrep (usuario)
-	
 	@author Martin Fernandez
-	
 	*/
 
 	require ('global.php');
-	
+
 	iniciarHtml ($pagina);
 	addJs('js/edit_order.js');
 	
@@ -113,18 +109,18 @@
 		$products->tablaProductos(); //Muestro la tabla de edicion de la orden
 		
 		echo '<br><table bgColor=#333 cellspacing=1 cellpadding=2 width=700>';
-		
-
 		echo '<tr><td width=150><b>Tipo de Pedido</b></td><td>';
+
 		$order_type->combo();	
 		echo '</td></tr>';
 
+
+		//<input type="text" name="txt_numero_pedido" maxlength="7" id="txt_numero_pedido">
+
 		//Numero de pedido
-		echo '<tr>
-					<td><b>Número de Pedido</b></td>
-					<td><input type=text name=txt_numero_pedido maxlength=7 id=txt_numero_pedido></td>
-			  </tr>
-		';
+		echo '<tr><td><b>Número de Pedido</b></td><td>';
+		comboBoxFromArray ( $user->getNumerosPedido() , "txt_numero_pedido" , "txt_numero_pedido" );
+		echo '</td></tr>';
 		
 		if ($customer->get_detail (price_list_id) != 0 ) 
 		{
@@ -142,6 +138,7 @@
 		{
 			$terms->titulo();
 		}
+
 		echo '</td></tr>';
 	
 		echo '<tr><td width=150><b>Condicion de pago</b></td><td>';

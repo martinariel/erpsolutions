@@ -45,7 +45,7 @@
 			else 
 			{
 				$sql = "select transaction_id from transactions where numero_pedido = " .
-						$this->db->numeroSQL($this->getNumeroPedido());
+						$this->db->numeroSQL( $this->getNumeroPedido() );
 			
 				$rs = $this->db->ejecutar_sql($sql);
 				
@@ -69,7 +69,7 @@
 			$ret  = "( user_id        = $user_id      or 0      = $user_id     ) and ";
 			$ret .= "( state_id       = $estado       or 0      = $estado      ) and ";
 			$ret .= "( print_count    = $impresiones  or 900000 = $impresiones ) and ";
-			$ret .= "( transaction_id = $codigo       or 0      = $codigo      )";
+			$ret .= "( numero_pedido  = $codigo       or 0      = $codigo      )";
 			
 			return $ret;
 		}
@@ -92,7 +92,7 @@
 			$user   = $_GET['user'];
 			$estado = $_GET['state'];
 			
-			if (isset($_GET["impresiones"]) && trim($_GET["impresiones"]) != "")
+			if ( isset($_GET["impresiones"]) && trim($_GET["impresiones"]) != "" )
 				$impresiones = cls_sql::numeroSQL($_GET['impresiones']);
 			else
 				$impresiones = "";
@@ -107,8 +107,8 @@
 			
 			iniciarForm ('frmBuscador',cls_page::get_fileName(),'GET','');
 			
-			echo 'Código:&nbsp;';
-			textBox ('','code',$codigo,false,'','',6,5);
+			echo 'N°Pedido:&nbsp;';
+			textBox ('','code',$codigo,false,'','',10,9);
 			echo '&nbsp;';
 			echo '&nbsp;';
 			
@@ -126,8 +126,8 @@
 			echo 'Estado:&nbsp;';
 			$sql = 'select state_id, description from transaction_states';
 			comboBox ($this->db,$sql,'','state',$estado,'' ,false);
-			echo '&nbsp;';
-			echo '&nbsp;';
+			echo '<br>';
+			echo '<br>';
 			button ('Buscar', "$('frmBuscador').submit()");
 			echo '&nbsp;';
 			button ('Imprimir B&uacute;squeda', "$('frmPrint').submit()");
@@ -139,7 +139,7 @@
 
 		//----------------------------------------------------------------------
 		
-		public function detalle( $mostrar_saldo = false ) 
+		public function detalle ( $mostrar_saldo = false ) 
 		{	
 			$list       = new cls_list_price ( $this->db );
 			$term       = new cls_terms      ( $this->db );
@@ -252,15 +252,14 @@
 			$total_rows =$rs1->RecordCount();
 			$rs1->Close();
 			
-			if ($rs && !$rs->EOF)
+			if ( $rs && !$rs->EOF )
 			{
 				
 				echo '<table bgColor=#333333 cellspacing=1 cellpadding=4>';
-				echo '<tr><th>Código</th><th>N°Pedido</th><th>Creado</th><th>Fecha Creaci&oacute;n</th><th>Modificado</th><th>Fecha Modificaci&oacute;n</th><th>Impresiones</th><th>Estado</th><th>Cambiar<br>Estado</th><th></th></tr>';
+				echo '<tr><th>N°Pedido</th><th>Creado</th><th>Fecha Creaci&oacute;n</th><th>Modificado</th><th>Fecha Modificaci&oacute;n</th><th>Impresiones</th><th>Estado</th><th>Cambiar<br>Estado</th><th></th></tr>';
 				
-				while (!$rs->EOF)
+				while ( !$rs->EOF )
 				{
-					
 					$state = new cls_transaction_state ($this->db, $rs->fields['state_id']);
 
 					$color      = $state->get_detail ( html_color  );
@@ -268,8 +267,7 @@
 					
 					echo '<tr>';
 					
-					echo '<td><a href=javascript:openDetails('. $rs->fields[$this->id_field] . ')><u>'.$rs->fields[$this->id_field].'</u></a></td>';
-					echo '<td>'.$rs->fields['numero_pedido'].'</td>';
+					echo '<td><a href=javascript:openDetails('. $rs->fields[$this->id_field] . ')><u>'.$rs->fields['numero_pedido'].'</u></a></td>';
 					
 					$user = new cls_user ($this->db, $rs->fields ('user_id'));
 					echo '<td>' . $user->get_detail (username) . '</td>';

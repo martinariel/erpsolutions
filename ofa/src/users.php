@@ -11,6 +11,7 @@
 	
 	iniciarHtml($pagina);
 	$abm = new cls_abm ($user);
+	$abm->hideColumn ("Password");
 	$abm->modeSelector();
 	cerrarHtml();
 ?> 

@@ -238,7 +238,9 @@
 			hidden ('iter',0); 
 			
 			echo '<table id="tabla_productos" bgColor=#333 cellspacing=1 cellpadding=2 width=700><tbody>';
-			echo '<tr><th>Cantidad</th><th>Producto</th><th>Precio<br>sin Iva</th><th>Precio<br>con Iva</th><th>Total Neto</th><th>Total</th></tr>';
+			echo '<tr>'.
+					'<th>Cantidad</th><th>Producto</th><th>Precio<br>sin Iva</th>'.
+					'<th>Precio<br>con Iva</th><th>Total Neto</th><th>Total</th><th></th></tr>';
 
 			echo '</tbody></table>';
 

@@ -3,24 +3,29 @@
 	/*
 	Clase abm para istancias derivadas de la clase cls_sql_table
 	
-	
-	TODO: update de la tabla e insert, seleccion de campos visibles 
-	
 	@Author: Martín Fernández. ERP Solutions 2007
 	@E-Mail: martin.fernandez@erp-solutions.com
-	@Last Update: 2007/08/14
 	
 	*/
 
 	Class cls_abm {
 		
 		private $obj_table;
+		private $hidden_columns;
 		
-		function __construct (cls_sql_table &$obj){
+		function __construct (cls_sql_table &$obj)
+		{
 			$this->obj_table = $obj;
+			$this->hidden_columns = array();
 		}
 		
-		public function modeSelector(){
+		public function hideColumn ( $column )
+		{
+			array_push( $this->hidden_columns, $column );
+		}
+
+		public function modeSelector()
+		{
 			$mode = $_POST['mode'];
 			$this->obj_table->set_id( cls_sql::numeroSQL( $_POST['id'] ) );	
 			
@@ -33,11 +38,13 @@
 			
 		}
 		
-		private function update(){
+		private function update()
+		{
 			$id = $this->obj_table->get_id();
 		}
 		
-		private function delete(){
+		private function delete()
+		{
 			$id = $this->obj_table->get_id();
 			
 			if ( $this->obj_table->execute_delete($id) ) {
@@ -85,8 +92,19 @@
 			if ($i <= $total_pages) echo "<a href=$url?page=$i> >> </a>&nbsp;";
 			echo "&nbsp;Registros: $rows";
 		}
+
+		private function in_hidden_fields ( $field_name )
+		{
+			foreach ( $this->hidden_columns as $f) 
+			{
+				if ( trim ( strtoupper($field_name)) == trim(strtoupper($f)))
+					return true;
+			}
+			return false;
+		}
 		
-		private function show (){
+		private function show ()
+		{
 			
 			$rows_pp = 10;
 			$total_rows = $this->obj_table->get_total_rows();
@@ -111,17 +129,32 @@
 				echo '<table align=center class=tableAbm cellspacing=1 cellpadding=2>'.$retorno;
 				
 				echo '<tr>'.$retorno;
-				for ($i = 0; $i < $fldNumber ; $i++){
-					echo '<th>' . ucwords( str_replace ( "_" , "&nbsp;" , $rs->FetchField($i)->name ) ) . '</th>'.$retorno;
+
+				for ($i = 0; $i < $fldNumber ; $i++)
+				{
+					$field_name = $rs->FetchField($i)->name;
+
+					if ( $this->in_hidden_fields ($field_name))
+						continue;
+
+					echo '<th>' . ucwords( str_replace ( "_" , "&nbsp;" , $field_name ) ) . '</th>'.$retorno;
 				}
+
 				echo '</tr>';
 				
-				while ( !$rs->EOF ){
-				
+				while ( !$rs->EOF )
+				{
+					
 					echo '<tr>'.$retorno;
-					for ($i =0 ; $i < $fldNumber; $i++){
+					for ($i =0 ; $i < $fldNumber; $i++)
+					{
+						$field_name = $rs->FetchField($i)->name;
+						if ( $this->in_hidden_fields ($field_name))
+							continue;
+
 						echo '<td>' . $rs->fields[$i] . '</td>'.$retorno;
 					}
+
 					echo '<td><a href=javascript:_update('.$rs->fields[0].')><img src=img/edit.gif alt=Edit></a></td>'.$retorno;
 					echo '<td><a href=javascript:_delete('.$rs->fields[0].')><img src=img/delete.gif alt=Delete></a></td>'.$retorno;
 					
