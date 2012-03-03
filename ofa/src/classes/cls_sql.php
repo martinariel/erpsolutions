@@ -15,7 +15,7 @@
 	{
 		private $conn;
 
-		const SERVER = "192.168.1.105";
+		const SERVER = "192.168.1.106";
 		const DB	 = "ebs";
 		const USER	 = "root";
 		const PWD  	 = "";

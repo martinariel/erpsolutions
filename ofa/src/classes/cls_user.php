@@ -81,6 +81,44 @@ class cls_user extends cls_sql_table
 	}
 
 	//----------------------------------------------------------------------
+
+	public function validarRango ( $desde , $hasta ) 
+	{
+		$sql = "select user_id,username,pedido_desde,pedido_hasta from users where " .
+		"(pedido_desde >= $desde       and pedido_desde <= $hasta      ) or " .
+		"(pedido_hasta >= $desde       and pedido_hasta <= $hasta      ) or " .
+		"($desde       >= pedido_desde and $desde       <= pedido_hasta) or " .
+		"($hasta       >= pedido_desde and $hasta       <= pedido_hasta)";
+
+		$rs = $this->db->ejecutar_sql ( $sql );
+
+		$ret = "";
+
+		if ( $rs )
+		{
+			while ( !$rs->EOF )
+			{
+				$id = $rs->fields[0];
+
+				if ( $id + 0  != $this->id + 0 )
+				{
+					if ( $ret == "" )
+						$ret .= "Error de solapamiento de rangos: \n\n";
+
+					$ret .= "    - " . $rs->fields[1] . " ( ".$rs->fields[2]." - ".$rs->fields[3]." )\n";
+				}
+
+				$rs->MoveNext();
+			}
+		}
+
+		if ( $ret == "")
+			$ret = "OK";
+
+		return $ret;
+	}
+
+	//----------------------------------------------------------------------
 	
 	private function _setSession ( &$rs ) 
 	{

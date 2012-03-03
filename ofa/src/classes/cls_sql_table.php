@@ -27,7 +27,8 @@
 		private $arrConditions;
 		private $camposNoInsertOracle;
 		
-		function __construct (&$db,$table_name,$id=0,$id_field='id',$condiciones=array() ){
+		function __construct (&$db,$table_name,$id=0,$id_field='id',$condiciones=array() )
+		{
 			$this->db = $db;
 			$this->table_name = $table_name;
 			$this->id = $id;
@@ -35,22 +36,29 @@
 			$this->arrConditions = $condiciones;			
 		}
 		
-		public function setCamposNoInserOracle( $vector) {
+		public function setCamposNoInserOracle( $vector) 
+		{
 			$this->camposNoInsertOracle = $vector;
 		}
 		
 		
-		public function agregarCampoNoInsert($campo) {
-			if (!isset($this->camposNoInsertOracle )){
+		public function agregarCampoNoInsert($campo) 
+		{
+			if (!isset($this->camposNoInsertOracle ))
+			{
 				$this->camposNoInsertOracle =array();
 			}
 			array_push ($this->camposNoInsertOracle ,$campo);
 		}
 		
-		private function analizarCampoInOracle ( $campo ) {
-			if ( isset ( $this->camposNoInsertOracle ) ) {
-				foreach ($this->camposNoInsertOracle as $fld) {
-					if ( strtolower($campo) == strtolower($fld) ) {
+		private function analizarCampoInOracle ( $campo ) 
+		{
+			if ( isset ( $this->camposNoInsertOracle ) ) 
+			{
+				foreach ($this->camposNoInsertOracle as $fld) 
+				{
+					if ( strtolower($campo) == strtolower($fld) ) 
+					{
 						return false;
 					}
 				}
@@ -62,26 +70,33 @@
 			}
 		}
 		
-		private function insertDummie() {
+		private function insertDummie() 
+		{
 			$sql = "insert into $this->table_name ($this->id_field) values (-1)";
 			return $this->db->ejecutar_sql($sql);
 		}
 		
 		/*obtiene la estructura de la tabla y se almacena en el array campos*/
-		private function obtener_estructura($times=0){
+		private function obtener_estructura($times=0)
+		{
 			$sql = "select * from $this->table_name";
 			$rs = $this->db->ejecutar_sql_pagina($sql,1,1);
 			
-			if ($rs && !$rs->EOF){
+			if ($rs && !$rs->EOF)
+			{
 				$this->campos = array();
-				for ( $i = 0 ; $i < $rs->FieldCount(); $i++){
+				for ( $i = 0 ; $i < $rs->FieldCount(); $i++)
+				{
 					$fld = $rs->FetchField($i);
 					array_push($this->campos,$fld);
 				}
 			}
-			else {
-				if ($times == 0) {
-					if ( $this->insertDummie() ){
+			else 
+			{
+				if ($times == 0) 
+				{
+					if ( $this->insertDummie() )
+					{
 						$this->obtener_estructura(1);
 					}
 				}
@@ -91,27 +106,32 @@
 		/*
 			devuelve una cadena con los campos de la tabla separdos por coma
 		*/
-		private function sql_campos($driver='') {
+		private function sql_campos($driver='') 
+		{
 			if (!isset($this->campos) ) 
 				$this->obtener_estructura();
 			
 			$i=0;
 			
-			foreach ($this->campos as $arr){
+			foreach ($this->campos as $arr)
+			{
 				
 				if (	strtolower($arr->name) != strtolower($this->id_field) 
-						|| $driver !='local' ) {
+						|| $driver !='local' ) 
+				{
 					
 					if ( ($driver=='oracle' && $this->analizarCampoInOracle($arr->name)) 
 						 || ($driver != 'oracle' )
 					)
 					{
-						if ($i>0){
-							$ret = $ret . ',' . $arr->name;
-							}
-						else {
+						if ( $i > 0 )
+						{
+							$ret .= ',' . $arr->name;
+						}
+						else 
+						{
 							$ret = $arr->name;
-							}
+						}
 						$i++;
 					}
 				}
