@@ -33,24 +33,24 @@
 			?>
 			<table align="center" width="700">
 				<tr>
-					<td colspan="2"><b>N° de Cliente:</b> <?php echo $this->get_detail ( customer_number )?></td>
+					<td><b>N° de Cliente:</b> <?php echo $this->get_detail ( customer_number )?></td>
+					<?php
+					if ( $mostrar_saldo )
+					{
+					?>
+					<td style="background-color:red;color:white;padding-left:4px;"><b>Saldo Adeudado:</b> <?php echo "$".$this->get_detail ( saldo )?></td>
+					<?php
+					}	
+					else
+					{
+						echo "<td></td>";
+					}	
+					?>
 				</tr>
 				<tr>
 					<td><b>Raz&oacute;n social:</b> <?php echo $this->get_detail ( customer_name          )?></td>
 					<td><b>Nombre Fantasia:</b>     <?php echo $this->get_detail ( customer_name_phonetic )?></td>
 				</tr>
-
-				<?php
-				if ( $mostrar_saldo )
-				{
-				?>
-				<tr>
-					<td><b>Saldo:</b> <?php echo $this->get_detail ( saldo )?></td>
-					<td></td>
-				</tr>
-				<?php
-				}
-				?>
 				<tr>
 					<td><b>CUIT:</b> <?php echo $this->get_detail ( cuit        )?></td>
 					<td><b>CP:</b>   <?php echo $this->get_detail ( postal_code )?></td>
