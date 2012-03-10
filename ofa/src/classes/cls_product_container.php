@@ -14,7 +14,7 @@
 		private $dummie;
 		public  $arrProducts = array ();
 		
-		function __construct ( cls_sql &$db , cls_list_price &$list_price) 
+		function __construct ( cls_sql &$db , $list_price) 
 		{
 			$this->db         = $db;
 			$this->list_price = $list_price;
@@ -227,6 +227,25 @@
 		}
 
 		//----------------------------------------------------------------------
+		
+		public function combobox ( $id ) 
+		{
+			$ret   = "<select name='$id' id='$id'><option value='0'></option>";
+			foreach ( $this->arrProducts as $arr ) 
+			{	
+				$id          = $arr->get_detail ( inventory_item_id );
+				$description = $arr->get_detail ( description );
+				$segment1    = $arr->get_detail ( segment1 );
+
+				$ret .= "<option value='$id'>" . $segment1 . " " . $description . '</option>';
+			}
+
+			$ret .= '</select>';
+
+			return $ret;
+		}
+
+		//----------------------------------------------------------------------
 
 		/*
 		Tabla de seleccion de productos
@@ -249,6 +268,51 @@
 			echo '</table>';			
 		}
 
+		//----------------------------------------------------------------------
+
+		public function printXml ($busqueda,$pos,$user_id)
+		{
+			if ( strlen( trim( $busqueda )) <= 1 )
+			{
+				echo "<complete></complete>";
+				return;
+			} 
+			$habilitados = $_SESSION['PRODUCTOS'];
+
+			$pos = cls_sql::numeroSQL($pos);
+
+			$sql = "SELECT inventory_item_id, CONCAT( segment1 , ' ' , description ) from mtl_system_items_b where ".
+					" CONCAT( segment1 , ' ' , description )  like '%$busqueda%' " . 
+					" and " . $this->condiciones() .
+					" order by description";
+	
+			$rs = $this->db->ejecutar_sql($sql);
+
+			if ($pos == 0)
+				echo '<complete>';
+			else
+				echo "<complete add='true'>";
+
+			if ($rs)
+			{
+				while (!$rs->EOF)
+				{
+
+					$value = $rs->fields[0];
+
+					if ( in_array ( $value , $habilitados ) )
+					{
+						$text  = $rs->fields[1];
+						echo "<option value=\"$value\">$text</option>";
+					}
+
+					$rs->MoveNext();
+				}
+			}
+
+			echo '</complete>';
+
+		}
 		//----------------------------------------------------------------------
 		
 		private function tablaSumatoria( $iva      = 0 , $neto = 0 , $total = 0 ,

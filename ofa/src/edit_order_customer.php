@@ -62,8 +62,11 @@
 		}
 		//********************************************************************
 
+		$products = new cls_product_container($db,$list);
+		$products->load($list->productos_existentes() , false ); //cargo los productos de la lista de precios
+
 		iniciarForm ('frmProducto',cls_page::get_filename() , 'GET' , '' , true);
-		ajaxComboBox('xml_products.php','combo_producto','id_producto',"<b>Producto:</b>", 0 , 300 , 'Agregar' , 'agregar_producto()');
+		ajaxComboBoxNoCache ('xml_products.php','combo_producto','id_producto',"<b>Producto:</b>", 0 , 300 , 'Agregar' , 'agregar_producto()');
 		cerrarForm(true);
 		
 		// ******************* Formulario de edicion de la orden  *********************
@@ -73,9 +76,7 @@
 		hidden ( 'address_id'    , $customer->get_detail(address_id) );
 		hidden ( 'customer_id'   , $customer->get_id()   );
 		
-		$products = new cls_product_container($db,$list);
-		$products->load($list->productos_existentes() , false ); //cargo los productos de la lista de precios
-
+		
 		?>
 		<script language="javascript">
 

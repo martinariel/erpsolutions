@@ -20,6 +20,46 @@
 	}
 
 	//----------------------------------------------------------------------
+
+	function ajaxComboBoxNoCache($xml,$id,$name,$caption,$modo=0,$width=200,$button='', $jsButton='')
+	{
+		addJs ('js/dhtmlXCommon.js');
+		addJs ('js/dhtmlXCombo.js');
+			
+		echo "<tr><td align=right>$caption</td><td>";
+		addDiv ($id,"style=\"display:inline;width:".$width."px; height:30px;\" ","");
+		?>
+			<script>window.dhx_globalImgPath="img/";</script>
+			<script>
+				
+				<?php
+				if (modo == 0){
+				?>
+				var z=new dhtmlXCombo("<?php echo $id?>","<?php echo $name?>","<?php echo $width?>");
+				z.enableFilteringMode(true,"<?php echo $xml?>",false);
+				<?php
+				}
+				else{
+				?>
+				var z=new dhtmlXComboFromSelect("<?php echo $id?>");
+				z.enableFilteringMode(true)
+				}
+				<?php
+				}
+				?>
+			</script>
+		<?php
+
+		if ( $button != '' && $jsButton != '' )
+		{
+			echo '</td><td>';
+			button ( $button , $jsButton );
+		}
+		
+		echo "</td></tr>";
+	}
+
+	//----------------------------------------------------------------------
 	
 	function ajaxComboBox($xml,$id,$name,$caption,$modo=0,$width=200,$button='', $jsButton='')
 	{

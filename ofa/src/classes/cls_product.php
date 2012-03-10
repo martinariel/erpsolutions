@@ -134,30 +134,20 @@
 
 		//----------------------------------------------------------------------
 
-		
-
 		public function get_precioUnidad()
-
 		{
-
 			return $this->precioUnidad;
-
 		}
 
 
 
 		//----------------------------------------------------------------------
 
-		
-
 		public function set_cantidad ( $cantidad ) 
-
 		{
 
 			$this->cantidad = $cantidad;
-
 			$this->set_detail ( custom_quantity , $this->cantidad);
-
 		}
 
 
@@ -192,83 +182,12 @@
 
 		//----------------------------------------------------------------------
 
-		
-
 		public function get_precioTotalSinIva ()
-
 		{			
 
 			return $this->cantidad * $this->precioUnidad;
 
-		}
-
-
-
-		//----------------------------------------------------------------------
-
-
-
-		public function printXml ($busqueda,$pos,$user_id)
-
-		{
-
-			$habilitados = $_SESSION['PRODUCTOS'];
-
-
-
-			$pos = cls_sql::numeroSQL($pos);
-
-			$sql = "SELECT inventory_item_id, CONCAT( segment1 , ' ' , description ) from mtl_system_items_b where ".
-
-					" CONCAT( segment1 , ' ' , description )  like '%$busqueda%' order by description";
-
-						
-
-			$rs = $this->db->ejecutar_sql($sql);
-
-			
-
-			if ($pos == 0)
-
-				echo '<complete>';
-
-			else
-
-				echo "<complete add='true'>";
-
-			
-
-			if ($rs)
-
-			{
-
-				while (!$rs->EOF)
-
-				{
-
-					$value = $rs->fields[0];
-
-					if ( in_array ( $value , $habilitados ) )
-
-					{
-
-						$text  = $rs->fields[1];
-
-						echo "<option value=\"$value\">$text</option>";
-
-					}
-
-					$rs->MoveNext();
-
-				}
-
-			}
-
-			echo '</complete>';
-
-		}
-
-		
+		}	
 
 	}
 

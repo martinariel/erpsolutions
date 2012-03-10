@@ -20,6 +20,6 @@
 	$busqueda = $_GET['mask'];
 	$pos      = $_GET['pos'];
 	
-	$product = new cls_product ($db);
+	$product = new cls_product_container ( $db , null );
 	$product->printXml ($busqueda,$pos,$user_id);
 ?>

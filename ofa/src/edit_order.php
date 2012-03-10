@@ -1,7 +1,5 @@
 <?php
 
-
-
 	/*
 
 	Formulario de seleccion de productos para el cliente seleccionado.
@@ -12,114 +10,62 @@
 
 	*/
 
-
-
 	require ('global.php');
 
-
-
 	iniciarHtml ($pagina);
-
 	addJs('js/edit_order.js');
 
-	
-
 	$customer_id   = $_GET [ 'customer_id'   ] + 0;
-
 	$address_id    = $_GET [ 'address_id'    ] + 0;
-
 	$list_id 	   = $_GET [ 'list_id'       ] + 0;
-
 	$term_id	   = $_GET [ 'term_id'       ] + 0;
-
 	$pay_term_id   = $_GET [ 'pay_term_id'   ] + 0;
-
 	$order_type_id = $_GET [ 'order_type_id' ] + 0;
 
-	
-
 	$condiciones = ( $address_id != 0 ) ? array ("address_id = $address_id") : array();
-
-	
-
 	array_push ( $condiciones, "salesrep_id = ".$user->get_detail(salesrep_id) );
-
-	
-
-	$customer = new cls_customer($db,$customer_id, $condiciones);	
-
+	$customer = new cls_customer($db,$customer_id, $condiciones);
 	
 
 	if ($customer->get_detail (price_list_id) != 0 )
-
 	{
-
 		$list_id = $customer->get_detail (price_list_id);
-
 	}
-
-	
 
 	if ($customer->get_detail (payment_term_id) != 0) 
-
 	{
-
 		$term_id = $customer->get_detail(payment_term_id);
-
 	}
 
-	
-
 	$list 	    = new cls_list_price ( $db , $list_id       );
-
 	$terms	    = new cls_terms      ( $db , $term_id       );
-
 	$pay_terms  = new cls_pay_terms  ( $db , $pay_term_id   );
-
 	$order_type = new cls_order_type ( $db , $order_type_id );
-
-	
-
-	
 
 	//el salesrep_id del usuario es igual al salesrep_id del cliente
 
 	if ( $customer->validate($user) ) 
-
 	{
-
 		//detalle html del cliente, razon social, direccion, etc
 
 		iniciarForm ('frmAdd',cls_page::get_filename(), 'GET');
 
-
-
 		$customer->html_detail();
-
 		$customer->comboSelectorDireccion($address_id,$user->get_detail(salesrep_id) );
 
-
-
 		hidden ( 'list_id'       , $list->get_detail(list_header_id) );
-
 		hidden ( 'customer_id'   , $customer->get_id()   );
 
-
-
 		addDiv ('linea','','');
-
 		cerrarForm();
 
 		//-----------------------------------------------------
 
-		
 
-		
 
 		// ******************* Formulario de lista de precios *********************
 
 		if ($customer->get_detail (price_list_id) == 0 ) 
-
 		{
 
 			iniciarForm ('frmList',cls_page::get_filename() , 'GET');
@@ -150,16 +96,9 @@
 
 		//********************************************************************
 
-		
-
 		iniciarForm ('frmProducto',cls_page::get_filename() , 'GET' , '' , true);
-
-		ajaxComboBox('xml_products.php','combo_producto','id_producto',"<b>Producto:</b>", 0 , 300 , 'Agregar' , 'agregar_producto()');
-
+		ajaxComboBoxNoCache('xml_products.php','combo_producto','id_producto',"<b>Producto:</b>", 0 , 300 , 'Agregar' , 'agregar_producto()');
 		cerrarForm(true);
-
-
-
 
 
 		// ******************* Formulario de edicion de la orden  *********************
@@ -167,122 +106,65 @@
 		iniciarForm ('frmEdit','save_order.php');
 
 
-
 		hidden ( 'list_id'       , $list->get_detail(list_header_id) );
-
 		hidden ( 'address_id'    , $customer->get_detail(address_id) );
-
 		hidden ( 'customer_id'   , $customer->get_id()   );
 
-		
 
 		$products = new cls_product_container($db,$list);
 
-
-
-		//cargo los productos de la lista de precios + las muestras
+		//cargo los productos de la lista de precios 
 
 		$products->load ( $list->productos_existentes() , false); 
 
-
-
 		?>
-
 		<script language="javascript">
 
-		var productos = <?php echo $products->json(); ?>
-
-		
-
+		var productos = <?php echo $products->json(); ?>;
 		var idxProductos = [];
 
-		
-
 		for ( var i = 0 ; i < productos.length ; i++ )
-
 		{
-
 			idxProductos[productos[i].Id] = i;
-
 		}
-
-		 
-
 		</script>
-
-		
-
 		<?php
 
 		$products->tablaProductos(); //Muestro la tabla de edicion de la orden
 
 		
-
 		echo '<br><table bgColor=#333 cellspacing=1 cellpadding=2 width=700>';
-
 		echo '<tr><td width=150><b>Tipo de Pedido</b></td><td>';
-
-
 
 		$order_type->combo();	
 
 		echo '</td></tr>';
 
-
-
-
-
-		//<input type="text" name="txt_numero_pedido" maxlength="7" id="txt_numero_pedido">
-
-
-
 		//Numero de pedido
 
 		echo '<tr><td><b>Número de Pedido</b></td><td>';
-
 		comboBoxFromArray ( $user->getNumerosPedido() , "txt_numero_pedido" , "txt_numero_pedido" );
-
 		echo '</td></tr>';
 
 		
-
 		if ($customer->get_detail (price_list_id) != 0 ) 
-
 		{
-
 			echo '<tr><td><b>Lista de precios</b></td><td>';
-
 			$list->titulo();
-
 			echo '</td></tr>';
-
 		}
-
-		
 
 		echo '<tr><td width=150><b>Términos de pago</b></td><td>';
 
 		if ( $customer->get_detail (payment_term_id) == 0 ) 
-
 		{
-
 			$terms->comboTerms();	
-
 		}
-
 		else
-
 		{
-
 			$terms->titulo();
-
 		}
-
-
-
 		echo '</td></tr>';
-
-	
 
 		echo '<tr><td width=150><b>Condicion de pago</b></td><td>';
 
