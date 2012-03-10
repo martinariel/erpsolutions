@@ -61,32 +61,48 @@
 			echo '<b>Lista de precios:&nbsp;</b> ' ; $list->titulo();
 		}
 		//********************************************************************
+
+		iniciarForm ('frmProducto',cls_page::get_filename() , 'GET' , '' , true);
+		ajaxComboBox('xml_products.php','combo_producto','id_producto',"<b>Producto:</b>", 0 , 300 , 'Agregar' , 'agregar_producto()');
+		cerrarForm(true);
 		
 		// ******************* Formulario de edicion de la orden  *********************
 		iniciarForm ('frmEdit','save_order_customer.php');
 
 		hidden ( 'list_id'       , $list->get_detail(list_header_id) );
 		hidden ( 'address_id'    , $customer->get_detail(address_id) );
-
 		hidden ( 'customer_id'   , $customer->get_id()   );
 		
 		$products = new cls_product_container($db,$list);
-		$products->load($list->productos_existentes() ); //cargo los productos de la lista de precios
+		$products->load($list->productos_existentes() , false ); //cargo los productos de la lista de precios
+
+		?>
+		<script language="javascript">
+
+		var productos = <?php echo $products->json(); ?>;
+		var idxProductos = [];
+
+		for ( var i = 0 ; i < productos.length ; i++ )
+		{
+			idxProductos[productos[i].Id] = i;
+		}
+		</script>
+		<?php
+
 		$products->tablaProductos(); //Muestro la tabla de edicion de la orden
-		
-		
-		echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=590>';
+
+		echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=700>';
 
 		echo '<tr><td width=150><b>Tipo de Pedido</b></td><td>';
 		$order_type->combo();	
 		echo '</td></tr>';
 		
-		//Numero de pedido
-		echo '<tr>
-					<td><b>Número de Pedido</b></td>
-					<td><input type=text name=txt_numero_pedido maxlength=7 id=txt_numero_pedido></td>
-			  </tr>
-		';
+		///Numero de pedido
+
+		echo '<tr><td><b>Número de Pedido</b></td><td>';
+		comboBoxFromArray ( $user->getNumerosPedido() , "txt_numero_pedido" , "txt_numero_pedido" );
+		echo '</td></tr>';
+
 		
 		if ($customer->get_detail (price_list_id) != 0 ) {
 			echo '<tr><td><b>Lista de precios</b></td><td>';
