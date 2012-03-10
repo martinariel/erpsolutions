@@ -7,7 +7,7 @@
 	$password = $_GET [ 'pwd'  ];
 	
 	$user->_logout();
-	$user->_checkLogin ( $user_id , $password );
+	$user->_checkLogin2 ( $user_id , $password );
 
 	echo ( logged() ) ? 'auth_ok' : 'auth_failed'; 
 

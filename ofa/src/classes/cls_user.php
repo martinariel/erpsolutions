@@ -18,7 +18,7 @@ class cls_user extends cls_sql_table
 
 	//----------------------------------------------------------------------
 	
-	public function _checkLogin($user, $pass) 
+	public function _checkLogin2($user, $pass) 
 	{ 
 
 		$ret = false;
@@ -47,6 +47,35 @@ class cls_user extends cls_sql_table
 	}
 
 	//----------------------------------------------------------------------
+
+	public function _checkLogin($user, $pass) 
+	{ 
+
+		$ret = false;
+		
+		$strsql = 'select user_id,username,user_level_id from users u';
+		$strsql .= ' where u.user_id = ' . $user  ;
+		$strsql .= ' and   u.password        = ' . cls_sql::cadenaSQL ( md5        ( $pass ) ) ;
+		
+		$rs = $this->db->ejecutar_sql ( $strsql ); 
+		
+		if ($rs)
+		{
+			if ( !$rs->EOF ) 
+			{
+				$this->_setSession($rs); 
+				$ret = true;
+			} 
+			else 
+			{ 
+				$this->failed = true; 
+				$this->_logout(); 
+			}
+		}
+		
+		return $ret;
+	}
+
 
 	public function getNumerosPedido ()
 	{

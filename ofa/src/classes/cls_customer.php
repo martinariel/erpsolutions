@@ -28,7 +28,7 @@
 		
 		public function html_detail ( $mostrar_saldo = false )
 		{
-			$mostrar_saldo = true;
+			$mostrar_saldo = false;
 
 			?>
 			<table align="center" width="700">

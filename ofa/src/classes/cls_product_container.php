@@ -141,9 +141,9 @@
 			$sql         = $dummie->get_select_query();
 			$id	         = cls_sql::numeroSQL($id);
 			$fld         = $dummie->get_id_field();
-			$condiciones = ( $modo > 0 )? $this->condicionesPromo() : $this->condiciones();
+			$condiciones = ( $modo > 1 )? $this->condicionesPromo() : $this->condiciones();
 			$sql         = "$sql where  $fld = $id and $condiciones";
-			
+
 			$productos = array();
 
 			return $this->pushVector( $sql , $productos , $modo);
