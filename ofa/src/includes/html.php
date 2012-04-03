@@ -96,7 +96,7 @@
 		var textareas = document.getElementsByTagName('textarea');
 
 		for (var i = textareas.length; i--;) {
-		    if (textareas[i].getAttribute('maxlength') && !textareas[i].maxlength) {
+		    if (textareas[i].getAttribute('maxlength')) {
 		        var max = textareas[i].getAttribute('maxlength');
 		        textareas[i].onkeypress = function(event) {
 		            var k = event ? event.which : window.event.keyCode;
