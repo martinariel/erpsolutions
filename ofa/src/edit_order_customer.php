@@ -105,14 +105,16 @@
 		echo '</td></tr>';
 
 		
-		if ($customer->get_detail (price_list_id) != 0 ) {
+		if ($customer->get_detail (price_list_id) != 0 ) 
+		{
 			echo '<tr><td><b>Lista de precios</b></td><td>';
 			$list->titulo();
 			echo '</td></tr>';
 		}
 		
 		echo '<tr><td width=150><b>Términos de pago</b></td><td>';
-		if ($customer->get_detail (payment_term_id) == 0 ) {
+		if ($customer->get_detail (payment_term_id) == 0 ) 
+		{
 			$terms->comboTerms();	
 		}
 		else

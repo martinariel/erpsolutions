@@ -161,7 +161,7 @@
 	function textArea ($caption,$name,$value, $table=true, $style= '') 
 	{
 		if ($table) echo "<tr><td align=right>$caption</td><td>";
-		echo "<textarea style=\"$style\" name=\"$name\" id=\"$name\">$value</textarea>";
+		echo "<textarea maxlength=\"99\" style=\"$style\" name=\"$name\" id=\"$name\">$value</textarea>";
 		if ($table) echo '</td></tr>';
 	}
 

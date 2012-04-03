@@ -1,13 +1,9 @@
 <?php
 
 	/*
-
 	Formulario de seleccion de productos para el cliente seleccionado.
-
 	Primero valida que el cliente pertenezca al salesrep (usuario)
-
 	@author Martin Fernandez
-
 	*/
 
 	require ('global.php');
@@ -62,36 +58,24 @@
 		//-----------------------------------------------------
 
 
-
 		// ******************* Formulario de lista de precios *********************
 
-		if ($customer->get_detail (price_list_id) == 0 ) 
+		if ( $customer->get_detail (price_list_id) == 0 ) 
 		{
 
 			iniciarForm ('frmList',cls_page::get_filename() , 'GET');
 
-
-
 			hidden ( 'customer_id'   , $customer->get_id() );
-
 			hidden ( 'address_id'    , $customer->get_detail(address_id) );
 
-
-
 			$list->comboSelector('frmList'); //Combo selector de listas de precio
-
-
 
 			cerrarForm();
 
 		}
-
 		else 
-
 		{
-
 			echo '<b>Lista de precios:&nbsp;</b> ' ; $list->titulo();
-
 		}
 
 		//********************************************************************
@@ -164,47 +148,29 @@
 		{
 			$terms->titulo();
 		}
-		echo '</td></tr>';
 
+		echo '</td></tr>';
 		echo '<tr><td width=150><b>Condicion de pago</b></td><td>';
-
 		$pay_terms->combo();	
-
 		echo '</td></tr>';
 
-		
 
 		echo '<tr><td valign=top><b>Observaciones</b></td><td>';
-
 		textArea('','observaciones','',false, 'width:100%;height:100px;border:0px');
-
 		echo '</td></tr></table>';
-
-		
 
 		cerrarForm();
 
 		//********************************************************************
 
-		
-
 		button ('<< Cancelar',"window.location='appmain.php'");
-
 		button ('Aceptar >>','enviarOrden()');
 
-		
-
 	}
-
 	else 
-
 	{
-
 		echo '<br>El cliente seleccionado no corresponde al vendedor<br>';
-
 	}
-
-
 
 	cerrarHtml ();
 

@@ -91,6 +91,20 @@
 	
 	?>
 	</center>
+
+	<script>
+		var textareas = document.getElementsByTagName('textarea');
+
+		for (var i = textareas.length; i--;) {
+		    if (textareas[i].getAttribute('maxlength') && !textareas[i].maxlength) {
+		        var max = textareas[i].getAttribute('maxlength');
+		        textareas[i].onkeypress = function(event) {
+		            var k = event ? event.which : window.event.keyCode;
+		            if(this.value.length >= max) if(k>46 && k<112 || k>123) return false;
+		        }
+		    }
+		}
+		</script>
   </div>
 	<div id="Footer"><p>ERP Solutions</p></div>
 </div>
