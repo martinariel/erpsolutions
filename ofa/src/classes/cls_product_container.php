@@ -84,6 +84,17 @@
 			$sql = $sql . " and segment1 < '899-01'";
 			return $sql;
 		}
+
+		//----------------------------------------------------------------------
+
+		private function condicionesTerceros()
+		{
+			$sql = "segment1 >= '900' ";
+			$sql = $sql . ' and organization_id = 105';
+			$sql = $sql . " and segment1 like '%-01-%'";
+			$sql = $sql . " and segment1 >= '900-01'";
+			return $sql;
+		}
 		
 		//----------------------------------------------------------------------
 
