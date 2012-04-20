@@ -1,3 +1,3 @@
-function changeList (newList) {
-	$('frmList').submit();
+function changeList (newList) {
+	$('frmList').submit();
 }
