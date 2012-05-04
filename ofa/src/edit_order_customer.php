@@ -95,7 +95,7 @@
 		echo '<br><table bgColor=#000000 cellspacing=1 cellpadding=2 width=700>';
 
 		echo '<tr><td width=150><b>Tipo de Pedido</b></td><td>';
-		$order_type->combo();	
+		$order_type->combo_reestringido ( $customer->get_detail ( province ) );		
 		echo '</td></tr>';
 		
 		///Numero de pedido
