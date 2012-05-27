@@ -8,7 +8,7 @@
 
 	require ('global.php');
 
-	iniciarHtml ($pagina);
+	iniciarHtml ( $pagina );
 	addJs('js/edit_order.js');
 
 	$customer_id   = $_GET [ 'customer_id'   ] + 0;
@@ -60,10 +60,10 @@
 
 		// ******************* Formulario de lista de precios *********************
 
-		if ( $customer->get_detail (price_list_id) == 0 ) 
+		if ( $customer->get_detail ( price_list_id ) == 0 ) 
 		{
 
-			iniciarForm ('frmList',cls_page::get_filename() , 'GET');
+			iniciarForm ( 'frmList',cls_page::get_filename() , 'GET' );
 
 			hidden ( 'customer_id'   , $customer->get_id() );
 			hidden ( 'address_id'    , $customer->get_detail(address_id) );

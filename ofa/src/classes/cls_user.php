@@ -76,6 +76,7 @@ class cls_user extends cls_sql_table
 		return $ret;
 	}
 
+	//----------------------------------------------------------------------
 
 	public function getNumerosPedido ()
 	{
@@ -157,6 +158,8 @@ class cls_user extends cls_sql_table
 		$_SESSION [ 'username'   ] = htmlspecialchars($rs->fields['username']);
 		$_SESSION [ 'user_level' ] = $rs->fields['user_level_id'] + 0;
 		$_SESSION [ 'logged'     ] = true;	
+
+		$_SESSION [ 'productos_terceros' ] = $rs->fields ['productos_terceros'];
 	}
 		
 	//----------------------------------------------------------------------
@@ -165,8 +168,5 @@ class cls_user extends cls_sql_table
 	{
 		session_defaults();
 	}
-
-	
-
 }
 ?>

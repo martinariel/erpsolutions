@@ -38,8 +38,9 @@
 		Cargo los productos en el vector arrProducts
 		*/
 		public function load ( $stringId = '*' , $cargarMuestras = false ) 
-		{
-			
+		{		
+			global $user;
+
 			$dummie = $this->getDummie();
 			$sql    = $dummie->get_select_query();
 				
@@ -53,13 +54,17 @@
 				$sql .= ' where ';
 			}
 			
-			$sql .= $this->condiciones();
+			if ( $user->get_detail ( "productos_terceros" ) == 1  )
+				$sql .= $this->condicionesTerceros();
+			else
+				$sql .= $this->condiciones();
+
 			$sql .= ' order by description';
 			
 			$productos = array();
 
 			//AGREGO LOS PRODUCTOS
-			$this->pushVector( $sql , $productos , 0 );
+			$this->pushVector ( $sql , $productos , 0 );
 
 			if ( $cargarMuestras )
 			{
@@ -70,7 +75,7 @@
 				
 				$this->pushVector( $sql , $productos , 2 );
 			}
-
+	
 			$_SESSION['PRODUCTOS'] = $productos;
 		}
 
@@ -93,6 +98,7 @@
 			$sql = $sql . ' and organization_id = 105';
 			$sql = $sql . " and segment1 like '%-01-%'";
 			$sql = $sql . " and segment1 >= '900-01'";
+
 			return $sql;
 		}
 		
@@ -147,12 +153,21 @@
 
 		private function addProduct ( $id , $modo = 0 ) 
 		{
+			global $user;
+
 			$dummie = new cls_product($this->db);
 
 			$sql         = $dummie->get_select_query();
 			$id	         = cls_sql::numeroSQL($id);
 			$fld         = $dummie->get_id_field();
-			$condiciones = ( $modo > 1 )? $this->condicionesPromo() : $this->condiciones();
+
+			$condiciones = "";
+			
+			if ( $user->get_detail ("productos_terceros") == 1)
+				$condiciones = $this->condicionesTerceros();
+			else
+				$condiciones = ( $modo > 1 ) ? $this->condicionesPromo() : $this->condiciones();
+
 			$sql         = "$sql where  $fld = $id and $condiciones";
 
 			$productos = array();
@@ -283,6 +298,7 @@
 
 		public function printXml ($busqueda,$pos,$user_id)
 		{
+			global $user;
 			if ( strlen( trim( $busqueda )) <= 1 )
 			{
 				echo "<complete></complete>";
@@ -294,9 +310,9 @@
 
 			$sql = "SELECT inventory_item_id, CONCAT( segment1 , ' ' , description ) from mtl_system_items_b where ".
 					" CONCAT( segment1 , ' ' , description )  like '%$busqueda%' " . 
-					" and " . $this->condiciones() .
+					" and " . ( ( $user->get_detail("productos_terceros") == 1 ) ? $this->condicionesTerceros() : $this->condiciones() ) .
 					" order by description";
-	
+
 			$rs = $this->db->ejecutar_sql($sql);
 
 			if ($pos == 0)
