@@ -9,7 +9,7 @@
 	{
 
 		private $arrProduct_id;
-		const OFAR_LIST_ID = 6010;
+		const OFAR_LIST_ID = 1;
 
 		function __construct ( &$db , $id = 0) 
 		{
