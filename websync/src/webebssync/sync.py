@@ -12,7 +12,7 @@ import MySQLdb
 #-------------------------------------------------------------------------------------------------------------
 
 # Conexion a plataforma
-erp = pyodbc.connect  ( 'driver={SQL Server};server=localhost\sqlexpress;database=dbDesarrollo;uid=sa;pwd=sa1234' )
+erp = pyodbc.connect  ( 'driver={SQL Server};server=192.168.0.11;database=dbDesarrollo;uid=PFUSER;pwd=USERPF' )
 
 # Conexion a sistema web
 web = MySQLdb.connect ( host = "erp-solutions.com.ar", user = "root", passwd = "1234", db = "EBS_WEB_INTERFACE" )
@@ -470,6 +470,7 @@ def importar_pedidos() :
 		IMAC_CPBI   = dict()
 		IMAC_NPIA   = dict()
 		l_IMAC_NPDI = list()
+		l_IMAC_NDDI = list()
 
 		#------------------------------------------------------------------------
 
@@ -496,18 +497,19 @@ def importar_pedidos() :
 		IMAC_NPIA['NPIA_COND_PAGO'] = "'%s'" % ( header['PAYMENT_TERM'] )
 		IMAC_NPIA['NPIA_LISTA_PRECVTA'] = header ['price_list_id']
 		IMAC_NPIA['NPIA_CANT_DTO_CAB'] = '0'
-		IMAC_NPIA['NPIA_CANT_DTO_REN']  = '0'
-		IMAC_NPIA['NPIA_DTONETBRU_CAB'] = '0'
-		IMAC_NPIA['NPIA_DTONETBRU_REN'] = '0'
+		IMAC_NPIA['NPIA_CANT_DTO_REN']  = '0' # TODO
+		IMAC_NPIA['NPIA_DTONETBRU_CAB'] = '1' # TODO
+		IMAC_NPIA['NPIA_DTONETBRU_REN'] = '1' # TODO
 		IMAC_NPIA['NPIA_RENGLON_DIR'] = header['ship_to_org_id']
 		IMAC_NPIA['NPIA_DEPOSITO_BASE'] = '1'
 		IMAC_NPIA['NPIA_FEC_ENT_BASE'] = IMAC_NPIA['NPIA_FECHA_EMI']
 		IMAC_NPIA['NPIA_CLASIF_NPCV_1'] = "'%s'" % ( header['attribute5'] )
-		#IMAC_NPIA['NPIA_CLASIF_NPCV_2'] = "forma de pago"  #TODO
-		IMAC_NPIA['NPIA_CLASIF_NPCV_3'] = "'SI'"
-		IMAC_NPIA['NPIA_VENDEDOR_1'] = header['salesrep_id']
-		IMAC_NPIA['NPIA_VOLUMEN_EMB'] = '0'
-		IMAC_NPIA['NPIA_PESO_EMB'] = '0'
+		IMAC_NPIA['NPIA_CLASIF_NPCV_2'] = "'01'"  #TODO
+		IMAC_NPIA['NPIA_CLASIF_NPCV_3'] = "'S'"   #TODO
+		IMAC_NPIA['NPIA_CLASIF_NPCV_4'] = "'-'"
+		IMAC_NPIA['NPIA_VENDEDOR_1']    = header['salesrep_id']
+		IMAC_NPIA['NPIA_VOLUMEN_EMB']   = '0'
+		IMAC_NPIA['NPIA_PESO_EMB']      = '0'
 
 
 		#------------------------------------------------------------------------
@@ -516,22 +518,36 @@ def importar_pedidos() :
 		for linea in lineas :
 			IMAC_NPDI = dict()
 			
-			IMAC_NPDI['NPDI_NUMINT_CPBI'] = transaction_id
-			IMAC_NPDI['NPDI_RENGLON_NPDE'] = numerador 
-			IMAC_NPDI['NPDI_ARTICULO'] = linea['inventory_item_id']
-			IMAC_NPDI['NPDI_DEPOSITO'] = '1'
+			IMAC_NPDI['NPDI_NUMINT_CPBI']     = transaction_id
+			IMAC_NPDI['NPDI_RENGLON_NPDE']    = numerador 
+			IMAC_NPDI['NPDI_ARTICULO']        = linea['inventory_item_id']
+			IMAC_NPDI['NPDI_DEPOSITO']        = '1'
 			IMAC_NPDI['NPDI_FECHA_ENTREGA']   = "'%s'" % ( t['CREATED'].strftime("%Y-%m-%d %H:%M:%S") )
 			IMAC_NPDI['NPDI_UNIMED']          = "'%s'" % ( linea['order_quantity_uom'] )
 			IMAC_NPDI['NPDI_CANTIDAD']        = linea['ordered_quantity']
 			IMAC_NPDI['NPDI_PRECIO_UNITARIO'] = str(linea['unit_list_price']).replace("," , ".")
-			IMAC_NPDI['NPDI_LISTA_PRECVTA']   = linea['price_list_id']
-			IMAC_NPDI['NPDI_UM_PRECIO_VTA']   = str(linea['unit_list_price']).replace("," , ".")
+			IMAC_NPDI['NPDI_PRECIO_UNITARIO'] = str('35.44').replace("," , ".") # TODO FIXME
+			IMAC_NPDI['NPDI_LISTA_PRECVTA']   = linea['price_list_id'] # TODO FIXME precio de la lista!!
+			IMAC_NPDI['NPDI_UM_PRECIO_VTA']   = '1'
 			IMAC_NPDI['NPDI_FACTOR_UMS']      = '1'
 			IMAC_NPDI['NPDI_CLASIF_NPDE_1']   = '2'
+
+                        
+                        IMAC_NDDI = dict()
+                        #TODO SOLO EN EL CASO QUE SEA CERO
+                        if linea['unit_list_price'] == 0 : #FIXME
+                                IMAC_NDDI['NDDI_NUMINT_CPBI'] = transaction_id
+                                IMAC_NDDI['NDDI_RENGLON_NPDE'] = numerador
+                                IMAC_NDDI['NDDI_ORDEN'] = "1"
+                                IMAC_NDDI['NDDI_POR_DESCUENTO'] = "'100'"
+                                l_IMAC_NDDI.append ( IMAC_NDDI )
 
 			numerador = numerador + 1
 
 			l_IMAC_NPDI.append ( IMAC_NPDI )
+
+                if len ( l_IMAC_NDDI ) > 0 :
+                        IMAC_NPIA['NPIA_CANT_DTO_REN'] = '1'
 
 		sql = construir_insert ( "IMAC_CPBI" , IMAC_CPBI )
 		datos_erp.execute ( sql )
@@ -543,8 +559,13 @@ def importar_pedidos() :
 			sql = construir_insert ( "IMAC_NPDI" , linea )
 			datos_erp.execute ( sql )
 
+		for descuento in l_IMAC_NDDI :
+                        sql = construir_insert ( "IMAC_NDDI" , descuento )
+                        datos_erp.execute ( sql )
+
 
 	# Por ultimo Cambio el estado de los pedidos en la web
+	# TODO
 	for t in transacciones :
 		
 		sql = "UPDATE transactions set state_id = %s where transaction_id = %s" % \
@@ -558,13 +579,3 @@ def importar_pedidos() :
 	web.commit()
 
 #----------------------------------------
-
-#exportar_vendedores()
-#exportar_clientes()
-#exportar_articulos()
-#exportar_precios()
-
-#exportar_condicion_pago()
-#exportar_terminos_pago()
-
-importar_pedidos()
