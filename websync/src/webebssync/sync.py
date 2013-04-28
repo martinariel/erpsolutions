@@ -429,6 +429,23 @@ def construir_insert ( tabla , datos ) :
 		  ",".join ( [ str(datos[d])  for d in datos ]) 
 		)
 
+
+#----------------------------------------
+
+def buscar_precio ( list_id , product_id ):
+
+	datos = web.cursor ( MySQLdb.cursors.DictCursor )
+
+	datos.execute ( 
+		"SELECT operand FROM list_price WHERE list_header_id=%s and product_id=%s" % ( str(list_id ) , str(product_id))
+	)
+
+
+	precio = datos.fetchall()
+
+	for p in precio :
+		return str( p['operand'] )
+
 #----------------------------------------
 
 def importar_pedidos() :
@@ -525,22 +542,21 @@ def importar_pedidos() :
 			IMAC_NPDI['NPDI_FECHA_ENTREGA']   = "'%s'" % ( t['CREATED'].strftime("%Y-%m-%d %H:%M:%S") )
 			IMAC_NPDI['NPDI_UNIMED']          = "'%s'" % ( linea['order_quantity_uom'] )
 			IMAC_NPDI['NPDI_CANTIDAD']        = linea['ordered_quantity']
-			IMAC_NPDI['NPDI_PRECIO_UNITARIO'] = str(linea['unit_list_price']).replace("," , ".")
-			IMAC_NPDI['NPDI_PRECIO_UNITARIO'] = str('35.44').replace("," , ".") # TODO FIXME
-			IMAC_NPDI['NPDI_LISTA_PRECVTA']   = linea['price_list_id'] # TODO FIXME precio de la lista!!
+			IMAC_NPDI['NPDI_PRECIO_UNITARIO'] = buscar_precio ( linea['price_list_id'] ,linea['inventory_item_id'])
+			IMAC_NPDI['NPDI_LISTA_PRECVTA']   = linea['price_list_id'] 
 			IMAC_NPDI['NPDI_UM_PRECIO_VTA']   = '1'
 			IMAC_NPDI['NPDI_FACTOR_UMS']      = '1'
 			IMAC_NPDI['NPDI_CLASIF_NPDE_1']   = '2'
 
-                        
-                        IMAC_NDDI = dict()
-                        #TODO SOLO EN EL CASO QUE SEA CERO
-                        if linea['unit_list_price'] == 0 : #FIXME
-                                IMAC_NDDI['NDDI_NUMINT_CPBI'] = transaction_id
-                                IMAC_NDDI['NDDI_RENGLON_NPDE'] = numerador
-                                IMAC_NDDI['NDDI_ORDEN'] = "1"
-                                IMAC_NDDI['NDDI_POR_DESCUENTO'] = "'100'"
-                                l_IMAC_NDDI.append ( IMAC_NDDI )
+			            
+			IMAC_NDDI = dict()
+			#TODO SOLO EN EL CASO QUE SEA CERO
+			if linea['unit_list_price'] == 0 : #FIXME
+			        IMAC_NDDI['NDDI_NUMINT_CPBI']  = transaction_id
+			        IMAC_NDDI['NDDI_RENGLON_NPDE'] = numerador
+			        IMAC_NDDI['NDDI_ORDEN'] = "1"
+			        IMAC_NDDI['NDDI_POR_DESCUENTO'] = "'100'"
+			        l_IMAC_NDDI.append ( IMAC_NDDI )
 
 			numerador = numerador + 1
 
@@ -560,8 +576,8 @@ def importar_pedidos() :
 			datos_erp.execute ( sql )
 
 		for descuento in l_IMAC_NDDI :
-                        sql = construir_insert ( "IMAC_NDDI" , descuento )
-                        datos_erp.execute ( sql )
+        	sql = construir_insert ( "IMAC_NDDI" , descuento )
+            datos_erp.execute ( sql )
 
 
 	# Por ultimo Cambio el estado de los pedidos en la web
