@@ -12,7 +12,8 @@ import MySQLdb
 #-------------------------------------------------------------------------------------------------------------
 
 # Conexion a plataforma
-erp = pyodbc.connect  ( 'driver={SQL Server};server=192.168.0.11;database=dbDesarrollo;uid=PFUSER;pwd=USERPF' )
+#erp = pyodbc.connect  ( 'driver={SQL Server};server=192.168.0.11;database=dbDesarrollo;uid=PFUSER;pwd=USERPF' )
+erp = pyodbc.connect  ( 'driver={SQL Server};server=localhost\sqlexpress;database=dbDesarrollo;uid=sa;pwd=sa1234' )
 
 # Conexion a sistema web
 web = MySQLdb.connect ( host = "erp-solutions.com.ar", user = "root", passwd = "1234", db = "EBS_WEB_INTERFACE" )
@@ -333,6 +334,93 @@ def exportar_precios() :
 
 #----------------------------------------
 
+def exportar_cpv2() :
+
+	print "------------------------------------------------------"
+	print "Exportacion de cpv2"
+	print "------------------------------------------------------"	
+
+	datos_web = web.cursor()
+	datos_web.execute ( "DELETE from CPV2" )
+	web.commit()
+
+	cursor = erp.cursor()
+
+	sql = """SELECT * FROM CCOB_CPV2 where CPV2_UTILIZABLE = 1"""
+
+	cursor.execute ( sql )
+
+	terminos = cursor.fetchall()
+
+	total = len ( terminos )
+	i = 1
+
+	for t in terminos :
+
+		sql = """INSERT INTO 
+			    CPV2 ( ID , CODIGO , NOMBRE )
+			    VALUES
+			    ( %s , '%s' ,'%s') """ % \
+			    (
+			    	
+			    	str ( crear_id ( t.CPV2_CLASIF_NPCV_2 )) ,
+			    	str ( t.CPV2_CLASIF_NPCV_2 ),
+			    	str ( t.CPV2_NOMBRE )
+			    )
+
+		datos_web.execute ( sql )
+
+		print "cpv2: %d/%d" % ( i , total )
+
+		i = i + 1
+
+	web.commit()
+
+#----------------------------------------
+
+def exportar_cpv3() :
+
+	print "------------------------------------------------------"
+	print "Exportacion de cpv3"
+	print "------------------------------------------------------"	
+
+	datos_web = web.cursor()
+	datos_web.execute ( "DELETE from CPV3" )
+	web.commit()
+
+	cursor = erp.cursor()
+
+	sql = """SELECT * FROM CCOB_CPV3 where CPV3_UTILIZABLE = 1"""
+
+	cursor.execute ( sql )
+
+	terminos = cursor.fetchall()
+
+	total = len ( terminos )
+	i = 1
+
+	for t in terminos :
+
+		sql = """INSERT INTO 
+			    CPV3 ( ID , CODIGO , NOMBRE )
+			    VALUES
+			    (%s, '%s' ,'%s') """ % \
+			    (
+			    	str ( crear_id ( t.CPV3_CLASIF_NPCV_3 )) ,
+			    	str ( t.CPV3_CLASIF_NPCV_3 ),
+			    	str ( t.CPV3_NOMBRE )
+			    )
+
+		datos_web.execute ( sql )
+
+		print "cpv3: %d/%d" % ( i , total )
+
+		i = i + 1
+
+	web.commit()
+
+#----------------------------------------
+
 def exportar_condicion_pago() :
 
 	print "------------------------------------------------------"
@@ -405,7 +493,7 @@ def exportar_terminos_pago () :
 			    (%s, '%s' ,'%s' , '2001-06-12 00:00:00') """ % \
 			    (
 			    	str ( crear_id ( t.CPCL_COND_PAGO ) ) ,
-			    	str ( t.CPCL_NOMBRE ) ,
+			    	str ( t.CPCL_NOMBRE    ) ,
 			    	str ( t.CPCL_COND_PAGO )
 			    )
 
@@ -429,6 +517,39 @@ def construir_insert ( tabla , datos ) :
 		  ",".join ( [ str(datos[d])  for d in datos ]) 
 		)
 
+#----------------------------------------
+
+def buscar_cpv3 ( id ) :
+
+	datos = web.cursor ( MySQLdb.cursors.DictCursor )
+
+	datos.execute ( 
+		"SELECT CODIGO FROM CPV3 WHERE ID=%s" % ( str ( id ) )
+	)
+
+	precio = datos.fetchall()
+
+	for p in precio :
+		return p['CODIGO']
+
+	return "-"
+
+#----------------------------------------
+
+def buscar_cpv2 ( id ) :
+
+	datos = web.cursor ( MySQLdb.cursors.DictCursor )
+
+	datos.execute ( 
+		"SELECT CODIGO FROM CPV2 WHERE ID=%s" % ( str ( id ) )
+	)
+
+	precio = datos.fetchall()
+
+	for p in precio :
+		return p['CODIGO']
+
+	return "-"
 
 #----------------------------------------
 
@@ -440,11 +561,12 @@ def buscar_precio ( list_id , product_id ):
 		"SELECT operand FROM list_price WHERE list_header_id=%s and product_id=%s" % ( str(list_id ) , str(product_id))
 	)
 
-
 	precio = datos.fetchall()
 
 	for p in precio :
-		return str( p['operand'] )
+		return p['operand']
+
+	return 0
 
 #----------------------------------------
 
@@ -491,42 +613,42 @@ def importar_pedidos() :
 
 		#------------------------------------------------------------------------
 
-		IMAC_CPBI['CPBI_NUMINT_CPBI'] = transaction_id
-		IMAC_CPBI['CPBI_CLASE_CPBTE'] = '76'
-		IMAC_CPBI['CPBI_FH_ING_REPOSIT'] = 'getdate()'
-		IMAC_CPBI['CPBI_HABILITADO_IMPORT'] ='1' 
-		IMAC_CPBI['CPBI_EN_PROCESO'] = '0'
+		IMAC_CPBI['CPBI_NUMINT_CPBI']       = transaction_id
+		IMAC_CPBI['CPBI_CLASE_CPBTE']       = '76'
+		IMAC_CPBI['CPBI_FH_ING_REPOSIT']    = 'getdate()'
+		IMAC_CPBI['CPBI_HABILITADO_IMPORT'] = '1' 
+		IMAC_CPBI['CPBI_EN_PROCESO']        = '0'
 
 		#------------------------------------------------------------------------
 
-		IMAC_NPIA['NPIA_NUMINT_CPBI'] = transaction_id
-		IMAC_NPIA['NPIA_APLICA_NUM_AUTO'] = '0'
-		IMAC_NPIA['NPIA_CONTIENE_PRECIOS_DTOS'] = '1'
-		IMAC_NPIA['NPIA_CALCULA_PROM_VOL'] = '0'
-		IMAC_NPIA['NPIA_CALCULA_BANDEJAS'] = '0'
-		IMAC_NPIA['NPIA_DIVISION_NPCA'] = '1'
-		IMAC_NPIA['NPIA_TIPO_NPCA'] = '10'
-		IMAC_NPIA['NPIA_NUMERO_NPCA'] = "'%s'" % ( t['numero_pedido'] )
-		IMAC_NPIA['NPIA_FECHA_EMI'] = "'%s'" % ( t['CREATED'].strftime("%Y-%m-%d %H:%M:%S") )
-		IMAC_NPIA['NPIA_CLIENTE'] = header['customer_id']
-		IMAC_NPIA['NPIA_MONEDA'] = "'PS'"
-		IMAC_NPIA['NPIA_OBSERVACION'] = "'%s'" % ( t['OBS'] )
-		IMAC_NPIA['NPIA_COND_PAGO'] = "'%s'" % ( header['PAYMENT_TERM'] )
-		IMAC_NPIA['NPIA_LISTA_PRECVTA'] = header ['price_list_id']
-		IMAC_NPIA['NPIA_CANT_DTO_CAB'] = '0'
-		IMAC_NPIA['NPIA_CANT_DTO_REN']  = '0' # TODO
-		IMAC_NPIA['NPIA_DTONETBRU_CAB'] = '1' # TODO
-		IMAC_NPIA['NPIA_DTONETBRU_REN'] = '1' # TODO
-		IMAC_NPIA['NPIA_RENGLON_DIR'] = header['ship_to_org_id']
-		IMAC_NPIA['NPIA_DEPOSITO_BASE'] = '1'
-		IMAC_NPIA['NPIA_FEC_ENT_BASE'] = IMAC_NPIA['NPIA_FECHA_EMI']
-		IMAC_NPIA['NPIA_CLASIF_NPCV_1'] = "'%s'" % ( header['attribute5'] )
-		IMAC_NPIA['NPIA_CLASIF_NPCV_2'] = "'01'"  #TODO
-		IMAC_NPIA['NPIA_CLASIF_NPCV_3'] = "'S'"   #TODO
-		IMAC_NPIA['NPIA_CLASIF_NPCV_4'] = "'-'"
-		IMAC_NPIA['NPIA_VENDEDOR_1']    = header['salesrep_id']
-		IMAC_NPIA['NPIA_VOLUMEN_EMB']   = '0'
-		IMAC_NPIA['NPIA_PESO_EMB']      = '0'
+		IMAC_NPIA ['NPIA_NUMINT_CPBI']     = transaction_id
+		IMAC_NPIA ['NPIA_APLICA_NUM_AUTO'] = '0'
+		IMAC_NPIA ['NPIA_CONTIENE_PRECIOS_DTOS'] = '1'
+		IMAC_NPIA ['NPIA_CALCULA_PROM_VOL'] = '0'
+		IMAC_NPIA ['NPIA_CALCULA_BANDEJAS'] = '0'
+		IMAC_NPIA ['NPIA_DIVISION_NPCA'] = '1'
+		IMAC_NPIA ['NPIA_TIPO_NPCA']     = header['order_type'][0:2].strip()
+		IMAC_NPIA ['NPIA_NUMERO_NPCA']   = "'%s'" % ( t['numero_pedido'] )
+		IMAC_NPIA ['NPIA_FECHA_EMI']     = "convert ( datetime , '%s' , 20 )" % ( t['CREATED'].strftime("%Y-%m-%d %H:%M:%S") )
+		IMAC_NPIA ['NPIA_CLIENTE']       = header['customer_id']
+		IMAC_NPIA ['NPIA_MONEDA']        = "'PS'"
+		IMAC_NPIA ['NPIA_OBSERVACION']   = "'%s'" % ( t['OBS'] )
+		IMAC_NPIA ['NPIA_COND_PAGO']     = "'%s'" % ( header['PAYMENT_TERM'] )
+		IMAC_NPIA ['NPIA_LISTA_PRECVTA'] = header ['price_list_id']
+		IMAC_NPIA ['NPIA_CANT_DTO_CAB']  = '0'
+		IMAC_NPIA ['NPIA_CANT_DTO_REN']  = '0' # TODO
+		IMAC_NPIA ['NPIA_DTONETBRU_CAB'] = '1' # TODO
+		IMAC_NPIA ['NPIA_DTONETBRU_REN'] = '1' # TODO
+		IMAC_NPIA ['NPIA_RENGLON_DIR']   = header['ship_to_org_id']
+		IMAC_NPIA ['NPIA_DEPOSITO_BASE'] = '1'
+		IMAC_NPIA ['NPIA_FEC_ENT_BASE']  = IMAC_NPIA['NPIA_FECHA_EMI']
+		IMAC_NPIA ['NPIA_CLASIF_NPCV_1'] = "'%s'" % ( header['attribute5'] )
+		IMAC_NPIA ['NPIA_CLASIF_NPCV_2'] = "'%s'" % ( buscar_cpv2 ( header['attribute2'] ) )
+		IMAC_NPIA ['NPIA_CLASIF_NPCV_3'] = "'%s'" % ( buscar_cpv3 ( header['attribute4'] ) )
+		IMAC_NPIA ['NPIA_CLASIF_NPCV_4'] = "'-'"
+		IMAC_NPIA ['NPIA_VENDEDOR_1']    = header['salesrep_id']
+		IMAC_NPIA ['NPIA_VOLUMEN_EMB']   = '0'
+		IMAC_NPIA ['NPIA_PESO_EMB']      = '0'
 
 
 		#------------------------------------------------------------------------
@@ -535,35 +657,36 @@ def importar_pedidos() :
 		for linea in lineas :
 			IMAC_NPDI = dict()
 			
-			IMAC_NPDI['NPDI_NUMINT_CPBI']     = transaction_id
-			IMAC_NPDI['NPDI_RENGLON_NPDE']    = numerador 
-			IMAC_NPDI['NPDI_ARTICULO']        = linea['inventory_item_id']
-			IMAC_NPDI['NPDI_DEPOSITO']        = '1'
-			IMAC_NPDI['NPDI_FECHA_ENTREGA']   = "'%s'" % ( t['CREATED'].strftime("%Y-%m-%d %H:%M:%S") )
-			IMAC_NPDI['NPDI_UNIMED']          = "'%s'" % ( linea['order_quantity_uom'] )
-			IMAC_NPDI['NPDI_CANTIDAD']        = linea['ordered_quantity']
-			IMAC_NPDI['NPDI_PRECIO_UNITARIO'] = buscar_precio ( linea['price_list_id'] ,linea['inventory_item_id'])
-			IMAC_NPDI['NPDI_LISTA_PRECVTA']   = linea['price_list_id'] 
-			IMAC_NPDI['NPDI_UM_PRECIO_VTA']   = '1'
-			IMAC_NPDI['NPDI_FACTOR_UMS']      = '1'
-			IMAC_NPDI['NPDI_CLASIF_NPDE_1']   = '2'
+			precio = buscar_precio ( linea['price_list_id'] ,linea['inventory_item_id'])
 
+			IMAC_NPDI [ 'NPDI_NUMINT_CPBI']     = transaction_id
+			IMAC_NPDI [ 'NPDI_RENGLON_NPDE']    = numerador 
+			IMAC_NPDI [ 'NPDI_ARTICULO']        = linea['inventory_item_id']
+			IMAC_NPDI [ 'NPDI_DEPOSITO']        = '1'
+			IMAC_NPDI [ 'NPDI_FECHA_ENTREGA']   = "convert ( datetime , '%s' , 20 )" % ( t['CREATED'].strftime("%Y-%m-%d %H:%M:%S") )
+			IMAC_NPDI [ 'NPDI_UNIMED']          = "'%s'" % ( linea['order_quantity_uom'] )
+			IMAC_NPDI [ 'NPDI_CANTIDAD']        = linea['ordered_quantity']
+			IMAC_NPDI [ 'NPDI_PRECIO_UNITARIO'] = str ( precio )
+			IMAC_NPDI [ 'NPDI_LISTA_PRECVTA']   = linea['price_list_id'] 
+			IMAC_NPDI [ 'NPDI_UM_PRECIO_VTA']   = '1'
+			IMAC_NPDI [ 'NPDI_FACTOR_UMS']      = '1'
+			IMAC_NPDI [ 'NPDI_CLASIF_NPDE_1']   = '2'
 			            
 			IMAC_NDDI = dict()
-			#TODO SOLO EN EL CASO QUE SEA CERO
-			if linea['unit_list_price'] == 0 : #FIXME
-			        IMAC_NDDI['NDDI_NUMINT_CPBI']  = transaction_id
-			        IMAC_NDDI['NDDI_RENGLON_NPDE'] = numerador
-			        IMAC_NDDI['NDDI_ORDEN'] = "1"
-			        IMAC_NDDI['NDDI_POR_DESCUENTO'] = "'100'"
-			        l_IMAC_NDDI.append ( IMAC_NDDI )
+			#SOLO EN EL CASO QUE SEA CERO
+			if linea['unit_selling_price'] == 0 : 
+				IMAC_NDDI['NDDI_NUMINT_CPBI']   = transaction_id
+				IMAC_NDDI['NDDI_RENGLON_NPDE']  = numerador
+				IMAC_NDDI['NDDI_ORDEN']         = "1"
+				IMAC_NDDI['NDDI_POR_DESCUENTO'] = "'100'"
+				l_IMAC_NDDI.append ( IMAC_NDDI )
 
 			numerador = numerador + 1
 
 			l_IMAC_NPDI.append ( IMAC_NPDI )
 
-                if len ( l_IMAC_NDDI ) > 0 :
-                        IMAC_NPIA['NPIA_CANT_DTO_REN'] = '1'
+		if len ( l_IMAC_NDDI ) > 0 :
+			IMAC_NPIA['NPIA_CANT_DTO_REN'] = '1'
 
 		sql = construir_insert ( "IMAC_CPBI" , IMAC_CPBI )
 		datos_erp.execute ( sql )
@@ -576,16 +699,15 @@ def importar_pedidos() :
 			datos_erp.execute ( sql )
 
 		for descuento in l_IMAC_NDDI :
-        	sql = construir_insert ( "IMAC_NDDI" , descuento )
-            datos_erp.execute ( sql )
+			sql = construir_insert ( "IMAC_NDDI" , descuento )
+			datos_erp.execute ( sql )
 
 
 	# Por ultimo Cambio el estado de los pedidos en la web
-	# TODO
 	for t in transacciones :
 		
-		sql = "UPDATE transactions set state_id = %s where transaction_id = %s" % \
-			( t['TRANSACTION_ID'] , estado_finalizado )
+		sql = "UPDATE transactions set STATE_ID = %s where TRANSACTION_ID = %s" % \
+			( estado_finalizado , t['TRANSACTION_ID']  )
 		datos_web.execute ( sql )
 
 	print "------ Se han transferido %d pedidos." % ( len(transacciones))
@@ -595,3 +717,5 @@ def importar_pedidos() :
 	web.commit()
 
 #----------------------------------------
+
+importar_pedidos()
