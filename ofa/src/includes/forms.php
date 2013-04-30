@@ -208,6 +208,11 @@
 	
 	function check ($name,$value,$onClick,$checked, $table = false , $caption = "") 
 	{
+		if ( $checked === true )
+		{
+			$checked = "checked";
+		}
+		
 		if ($table) echo "<tr><td align=right>$caption</td><td>";
 		echo "<input style=border:0 onClick=\"$onClick\" id=\"$name\" $checked type=checkbox name=\"$name\" value=\"$value\" >$retorno";
 		if ($table) echo '</td></tr>';

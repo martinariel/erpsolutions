@@ -22,6 +22,7 @@
 		$user->set_detail ( pedido_hasta  , $_POST['pedido_hasta'] );
 
 		$user->set_detail ( productos_terceros , $_POST ['productos_terceros'] + 0 );
+		$user->set_detail ( clientes_todos     , $_POST ['clientes_todos']     + 0 );
 
 		if ($user_id == 0) 
 		{
@@ -148,7 +149,6 @@
 
 		if ( $user_id != 0) 
 		{
-
 			textBox         ( 'Nombre de usuario: ','txtusername' , $user->get_detail (username) );
 			textBox         ( 'E-Mail: '           ,'txtemail'    , $user->get_detail (email) );
 			textBoxPassword ( 'Contraseña <br>(en blanco para no <br>cambiarla)','txtpass');
@@ -160,6 +160,7 @@
 			textBox         ( 'Nº Pedido Hasta:','pedido_hasta' , $user->get_detail ( pedido_hasta ) );
 
 			check ( "productos_terceros" , 1 ,"",$user->get_detail ( productos_terceros ) == 1 , true , "Productos de Terceros:"); 
+			check ( "clientes_todos"     , 1 ,"",$user->get_detail ( clientes_todos     ) == 1 , true , "Todos los clientes:"); 
 
 		}
 		else
@@ -172,7 +173,8 @@
 			comboBox        ( $db ,'select salesrep_id,name from salesreps where salesrep_id > 0' ,'Salesrep:' ,'salesrep_id' ,0,'');
 			textBox         ( 'Nº Pedido Desde:','pedido_desde' , 0 );
 			textBox         ( 'Nº Pedido Hasta:','pedido_hasta' , 0 );
-			check           ( "productos_terceros" , 1 ,"",0 , true , "Productos de Terceros:"); 
+			check           ( "productos_terceros" , 1 , "" , 0 , true  , "Productos de Terceros:"); 
+			check           ( "clientes_todos"     , 1 , "" , 0 , true , "Todos los clientes:"); 
 		}
 
 		echo '<tr><td align=center colspan=2><br>';

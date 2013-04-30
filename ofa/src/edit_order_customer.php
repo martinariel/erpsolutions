@@ -20,17 +20,20 @@
 	$term_id	   = $_GET [ 'term_id'       ] + 0;
 	$pay_term_id   = $_GET [ 'pay_term_id'   ] + 0;
 	$order_type_id = $_GET [ 'order_type_id' ] + 0;
+	$cpv2_id       = $_GET [ 'cpv2_id'       ] + 0;
+	$cpv3_id       = $_GET [ 'cpv3_id'       ] + 0;
 	
 	$customer   = new cls_custom_customer ( $db , $customer_id   );	
 	$list 	    = new cls_list_price      ( $db , $list_id       );
 	$terms	    = new cls_terms           ( $db , $term_id       );
 	$pay_terms  = new cls_pay_terms       ( $db , $pay_term_id   );
 	$order_type = new cls_order_type      ( $db , $order_type_id );
+	$cpv2       = new cls_cpv2            ( $db , $cpv2_id       );
+	$cpv3       = new cls_cpv3            ( $db , $cpv3_id       );
 	
 	//el salesrep_id del usuario es igual al salesrep_id del cliente
-	if ( $customer->validate($user) ) 
+	if ( $customer->validate ( $user ) ) 
 	{
-		
 		//detalle html del cliente, razon social, direccion, etc
 		iniciarForm ('frmAdd',cls_page::get_filename(), 'GET');
 		addDiv('linea','','');
@@ -123,11 +126,18 @@
 		}
 		
 		echo '</td></tr>';
-		
 		echo '<tr><td width=150><b>Condicion de pago</b></td><td>';
-		
 		$pay_terms->combo();	
-		
+		echo '</td></tr>';
+
+		echo '</td></tr>';
+		echo '<tr><td width=150><b>'.$cpv2->caption().'</b></td><td>';
+		$cpv2->combo();	
+		echo '</td></tr>';
+
+		echo '</td></tr>';
+		echo '<tr><td width=150><b>'.$cpv3->caption().'</b></td><td>';
+		$cpv3->combo();	
 		echo '</td></tr>';
 		
 		echo '<tr><td valign=top><b>Observaciones</b></td><td>';

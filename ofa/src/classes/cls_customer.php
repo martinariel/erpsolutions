@@ -86,10 +86,10 @@
 				{
 				
 					?>
-					<table align="center" width=700>
+					<table align="center" width="700">
 						<tr>
-							<td width=350></td>
-							<td align=left><b>Cambiar Direcci&oacute;n de env&iacute;o:</b> 
+							<td width="350"></td>
+							<td align="left"><b>Cambiar Direcci&oacute;n de env&iacute;o:</b> 
 							<?php 
 							$sql = "select address_id, address1 from $this->table_name where $this->id_field = $id and ($salesrep_id = 0 or salesrep_id = $salesrep_id)";
 							comboBox ($this->db,$sql,'','address_id',$this->get_detail(address_id),"$('frmAdd').submit()",false);
@@ -106,6 +106,10 @@
 		//validate user->salesrep_id against this->get_detail(salesrep_id)
 		public function validate(&$user)
 		{
+
+			if ( $user->get_detail ( clientes_todos )  == 1 )
+				return true;
+
 			return $user->get_detail(salesrep_id) == $this->get_detail(salesrep_id);
 		}
 		
@@ -113,10 +117,18 @@
 			
 		public function printXml ($busqueda,$pos,$user_id)
 		{
+			$user = new cls_user ( $this->db , $user_id );
+
 			$pos = cls_sql::numeroSQL($pos);
 			$sql = "SELECT customer_id, customer_name from ra_customers where ".
 					" salesrep_id = (select salesrep_id from users where user_id = $user_id ) ".
 					" and customer_name like '$busqueda%' group by customer_id,customer_name order by customer_name limit $pos,100";
+
+			if ( $user->get_detail ( clientes_todos ) == 1 )
+			{
+				$sql = "SELECT customer_id, customer_name from ra_customers where ".
+					"customer_name like '$busqueda%' group by customer_id,customer_name order by customer_name limit $pos,100";	
+			}
 						
 			$rs = $this->db->ejecutar_sql($sql);
 			
