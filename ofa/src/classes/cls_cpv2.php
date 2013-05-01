@@ -19,7 +19,7 @@
 
 		public function caption () 
 		{
-			return "CPV2";
+			return "Forma de Pago";
 		}
 	}
 ?>

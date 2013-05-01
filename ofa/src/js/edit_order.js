@@ -16,9 +16,9 @@ function validar ()
 
 	if ( order_type_id == 0 )	msg += "- Debe seleccionar el tipo de pedido.\n"
 	if ( term_id       == 0 )	msg += "- Debe seleccionar los términos de pago.\n"
-	if ( pay_term_id   == 0 )	msg += "- Debe seleccionar la condicion de pago.\n"
-	if ( cpv2_id       == 0 )   msg += "- Debe seleccionar CPV2.\n";
-	if ( cpv3_id       == 0 )   msg += "- Debe seleccionar CPV3.\n";
+	if ( pay_term_id   == 0 )	msg += "- Debe seleccionar la condicion de venta.\n"
+	if ( cpv2_id       == 0 )   msg += "- Debe seleccionar Forma de Pago.\n";
+	if ( cpv3_id       == 0 )   msg += "- Debe seleccionar Retenido.\n";
 
 	validarNumeroPedido(msg);
 }

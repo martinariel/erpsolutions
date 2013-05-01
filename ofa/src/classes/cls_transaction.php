@@ -247,11 +247,11 @@
 			echo '</td></tr><tr><td><b>Lista de precios</b></td><td>';
 			$list->titulo();
 
-			echo '</td></tr><tr><td width=150><b>Condiciones de pago</b></td><td>';
-			$pay_terms->titulo();
-
 			echo '</td></tr><tr><td width=150><b>Términos de pago</b></td><td>';
 			$term->titulo();
+
+			echo '</td></tr><tr><td width=150><b>'.$pay_terms->caption().'</b></td><td>';
+			$pay_terms->titulo();
 
 			echo '</td></tr><tr><td width=150><b>' . $cpv2->caption() . '</b></td><td>';
 			$cpv2->titulo();

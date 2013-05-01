@@ -126,7 +126,7 @@
 		}
 		
 		echo '</td></tr>';
-		echo '<tr><td width=150><b>Condicion de pago</b></td><td>';
+		echo '<tr><td width=150><b>'.$pay_terms->caption().'</b></td><td>';
 		$pay_terms->combo();	
 		echo '</td></tr>';
 
