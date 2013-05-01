@@ -11,7 +11,7 @@
 
 			$sql = "select $this->id_field, NOMBRE from $this->table_name";
 
-			comboBox ($this->db,$sql,'','cpv3_id',$seleccionado,'',false ,0, $mostrarSeleccione);
+			comboBox ($this->db,$sql,'','cpv3_id',$seleccionado,'',false ,0, false);
 		}
 
 		public function titulo () 

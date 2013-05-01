@@ -21,7 +21,7 @@ class cls_order_type extends cls_sql_table
 	{
 		$sql = "select distinct $this->id_field, order_type from $this->table_name";
 
-		comboBox ( $this->db , $sql ,'' ,'order_type_id' , $seleccionado , '' , false ,0, $mostrarSeleccione);
+		comboBox ( $this->db , $sql ,'' ,'order_type_id' , $seleccionado , '' , false ,0, false);
 	}
 
 	//----------------------------------------------------------------------
@@ -40,16 +40,7 @@ class cls_order_type extends cls_sql_table
 
 		$sql = "select distinct $this->id_field, order_type from $this->table_name";
 
-		if ( $key == 'TIERRA DEL FUEGO')
-		{
-			$sql .= " where order_type_id = 1104";
-		}
-		else
-		{
-			$sql .= " where order_type_id <> 1104";	
-		}
-
-		comboBox ( $this->db , $sql ,'' ,'order_type_id' , -1 , '' , false ,0, true );
+		comboBox ( $this->db , $sql ,'' ,'order_type_id' , -1 , '' , false ,0, false );
 
 	}	
 

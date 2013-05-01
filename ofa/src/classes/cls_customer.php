@@ -120,14 +120,14 @@
 			$user = new cls_user ( $this->db , $user_id );
 
 			$pos = cls_sql::numeroSQL($pos);
-			$sql = "SELECT customer_id, customer_name from ra_customers where ".
+			$sql = "SELECT customer_id, customer_name_phonetic from ra_customers where ".
 					" salesrep_id = (select salesrep_id from users where user_id = $user_id ) ".
-					" and customer_name like '$busqueda%' group by customer_id,customer_name order by customer_name limit $pos,100";
+					" and customer_name_phonetic like '$busqueda%' group by customer_id,customer_name_phonetic order by customer_name_phonetic limit $pos,100";
 
 			if ( $user->get_detail ( clientes_todos ) == 1 )
 			{
-				$sql = "SELECT customer_id, customer_name from ra_customers where ".
-					"customer_name like '$busqueda%' group by customer_id,customer_name order by customer_name limit $pos,100";	
+				$sql = "SELECT customer_id, customer_name_phonetic from ra_customers where ".
+					"customer_name_phonetic like '$busqueda%' group by customer_id,customer_name_phonetic order by customer_name_phonetic limit $pos,100";	
 			}
 						
 			$rs = $this->db->ejecutar_sql($sql);

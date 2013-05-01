@@ -70,7 +70,7 @@
 
 			{
 
-				return round($precio  + ($precio*self::iva) , 2);
+				return round($precio  + ($precio*self::iva) , 3);
 
 			}
 

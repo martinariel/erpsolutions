@@ -296,6 +296,15 @@
 
 		//----------------------------------------------------------------------
 
+		private function limpiar_xml ( $cadena )
+		{
+			$cadena = str_replace ( "ñ" , "n" , $cadena );
+			$cadena = str_replace ( "Ñ" , "N" , $cadena );
+			return $cadena;
+		}
+
+		//----------------------------------------------------------------------
+
 		public function printXml ($busqueda,$pos,$user_id)
 		{
 			global $user;
@@ -329,7 +338,7 @@
 
 					if ( in_array ( $value , $habilitados ) )
 					{
-						$text  = $rs->fields[1];
+						$text  = $this->limpiar_xml ( $rs->fields[1] );
 						echo "<option value=\"$value\">$text</option>";
 					}
 
@@ -351,13 +360,13 @@
 				<td colspan="6">
 					<table border="0" align="right">
 						<tr>
-							<td><b>Iva:</b></td><td>$<div id="iva" style="display:inline"><?php echo round($iva,2) ?></div></td>
+							<td><b>Iva:</b></td><td>$<div id="iva" style="display:inline"><?php echo round($iva,3) ?></div></td>
 						</tr>
 						<tr>
-							<td><b>Precio sin Iva:</b></td><td>$<div id="neto" style=display:inline><?php echo round($neto,2) ?></div></td>
+							<td><b>Precio sin Iva:</b></td><td>$<div id="neto" style=display:inline><?php echo round($neto,3) ?></div></td>
 						</tr>
 						<tr>
-							<td><b>Precio Total:</b></td><td>$<div id="precio" style=display:inline><?php echo round($total,2) ?></div></td>
+							<td><b>Precio Total:</b></td><td>$<div id="precio" style=display:inline><?php echo round($total,3) ?></div></td>
 						</tr>
 						<tr>
 							<td><b>Total Unidades:</b></td><td><div id="cantidad" style=display:inline><?php echo $cantidad ?></div></td>
